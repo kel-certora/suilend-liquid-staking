@@ -1,4 +1,4 @@
-module spec::consistency;
+module spec::validators_consistency;
 
 use cvlm::asserts::{cvlm_assert, cvlm_assume_msg};
 use cvlm::function::Function;

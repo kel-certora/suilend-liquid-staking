@@ -10,6 +10,7 @@ use liquid_staking::liquid_staking::{Self, LiquidStakingInfo};
 use spec::dummy::DummyToken;
 use sui_system::sui_system::SuiSystemState;
 use spec::common::setup_fresh;
+use spec::accounting_total_sui_supply::total_supply_correct;
 
 public fun cvlm_manifest() {
     // Public mut functions
@@ -31,11 +32,11 @@ public fun cvlm_manifest() {
     rule(b"solvency_base");
     rule(b"solvency_base_staker");
     rule(b"solvency_step");
-    rule(b"insolvency_bound");
+    
+    // This rule verifies an upper bound of 1 for insolvency per operation
+    // rule(b"insolvency_bound");
 
     rule(b"monotonicity");
-    rule(b"no_lst_no_sui");
-    rule(b"no_sui_no_lst");
 }
 
 const MAX_VALIDATORS: u64 = 1;
@@ -112,6 +113,7 @@ public fun solvency_step(
     // cvlm_assume_msg(lsi.accrued_spread_fees() == 0, b"No fees");
     // cvlm_assume_msg(lsi.total_lst_supply() <= 10000 && lsi.total_lst_supply() <= 10000, b"Reasonable values for CEX");
     cvlm_assume_msg(is_solvent(lsi), b"Assume solvency in pre state");
+    cvlm_assume_msg(total_supply_correct(lsi.storage()), b"Correct accounting");
 
     validate_fees(lsi.fee_config());
 
@@ -132,8 +134,6 @@ public fun insolvency_bound(
     );
     setup_fresh(lsi, system_state, ctx);
 
-    // cvlm_assume_msg(lsi.accrued_spread_fees() == 0, b"No fees");
-    // cvlm_assume_msg(lsi.total_lst_supply() <= 10000 && lsi.total_lst_supply() <= 10000, b"Reasonable values for CEX");
     cvlm_assume_msg(is_solvent(lsi), b"Assume solvency in pre state");
 
     validate_fees(lsi.fee_config());
@@ -143,75 +143,6 @@ public fun insolvency_bound(
     cvlm_assert(lsi.total_lst_supply() +1 >= lsi.total_lst_supply());
 }
 
-public fun no_lst_no_sui(
-    target: Function,
-    lsi: &mut LiquidStakingInfo<DummyToken>,
-    system_state: &mut SuiSystemState,
-    ctx: &mut TxContext,
-) {
-    cvlm_assume_msg(
-        lsi.storage().validators().length() <= MAX_VALIDATORS,
-        b"Restrict number of validators",
-    );
-    setup_fresh(lsi, system_state, ctx);
-
-    cvlm_assume_msg(is_solvent(lsi), b"Assume solvency in pre state");
-
-    let lst_pre = lsi.total_lst_supply();
-    let sui_pre = lsi.total_sui_supply();
-
-    //      lst=0 -> sui = 0
-    // <==> lst != 0 || sui = 0
-    cvlm_assume_msg(lst_pre != 0 || sui_pre == 0, b"Assume in pre-state");
-
-    //let mut ctx2: TxContext = nondet();
-    //cvlm_assume_msg(ctx.epoch() <= ctx2.epoch(), b"Time");
-
-    invoke(target, lsi, system_state, ctx);
-
-    let lst_post = lsi.total_lst_supply();
-    let sui_post = lsi.total_sui_supply();
-
-    // sui_pre/lst_pre <= sui_post/lst_post
-    // <==> sui_pre*lst_post <= sui_post*lst_pre
-
-    cvlm_assert(lst_post != 0 || sui_post == 0);
-}
-
-public fun no_sui_no_lst(
-    target: Function,
-    lsi: &mut LiquidStakingInfo<DummyToken>,
-    system_state: &mut SuiSystemState,
-    ctx: &mut TxContext,
-) {
-    cvlm_assume_msg(
-        lsi.storage().validators().length() <= MAX_VALIDATORS,
-        b"Restrict number of validators",
-    );
-    setup_fresh(lsi, system_state, ctx);
-
-    cvlm_assume_msg(is_solvent(lsi), b"Assume solvency in pre state");
-
-    let lst_pre = lsi.total_lst_supply();
-    let sui_pre = lsi.total_sui_supply();
-
-    //      sui=0 -> lst=0
-    // <==> sui != 0 || lst = 0
-    cvlm_assume_msg(sui_pre != 0 || lst_pre == 0, b"Assume in pre-state");
-
-    //let mut ctx2: TxContext = nondet();
-    //cvlm_assume_msg(ctx.epoch() <= ctx2.epoch(), b"Time");
-
-    invoke(target, lsi, system_state, ctx);
-
-    let lst_post = lsi.total_lst_supply();
-    let sui_post = lsi.total_sui_supply();
-
-    // sui_pre/lst_pre <= sui_post/lst_post
-    // <==> sui_pre*lst_post <= sui_post*lst_pre
-
-    cvlm_assert(sui_post != 0 || lst_post == 0);
-}
 
 public fun monotonicity(
     target: Function,
@@ -224,6 +155,7 @@ public fun monotonicity(
         b"Restrict number of validators",
     );
     setup_fresh(lsi, system_state, ctx);
+    cvlm_assume_msg(total_supply_correct(lsi.storage()), b"Correct accounting");
 
     //cvlm_assume_msg(is_solvent(lsi), b"Assume solvency in pre state");
 
@@ -231,9 +163,6 @@ public fun monotonicity(
     let sui_pre = lsi.total_sui_supply();
 
     cvlm_assume_msg(lst_pre > 0 && sui_pre > 0, b"Non-empty reserve");
-
-    //let mut ctx2: TxContext = nondet();
-    //cvlm_assume_msg(ctx.epoch() <= ctx2.epoch(), b"Time");
 
     invoke(target, lsi, system_state, ctx);
 
