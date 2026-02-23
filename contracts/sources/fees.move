@@ -224,10 +224,10 @@ module liquid_staking::fees {
             extra_fields: bag::new(scenario.ctx()),
         };
 
-        assert!(calculate_mint_fee(&fees, 1) == 1, 0);
-        assert!(calculate_mint_fee(&fees, 99) == 1, 0);
-        assert!(calculate_mint_fee(&fees, 100) == 1, 0);
-        assert!(calculate_mint_fee(&fees, 101) == 2, 0);
+        assert!(calculate_mint_fee(&fees, 1) == 1);
+        assert!(calculate_mint_fee(&fees, 99) == 1);
+        assert!(calculate_mint_fee(&fees, 100) == 1);
+        assert!(calculate_mint_fee(&fees, 101) == 2);
 
         std::unit_test::destroy(fees);
         scenario.end();
@@ -246,10 +246,10 @@ module liquid_staking::fees {
             extra_fields: bag::new(scenario.ctx()),
         };
 
-        assert!(calculate_redeem_fee(&fees, 1) == 1, 0);
-        assert!(calculate_redeem_fee(&fees, 99) == 1, 0);
-        assert!(calculate_redeem_fee(&fees, 100) == 1, 0);
-        assert!(calculate_redeem_fee(&fees, 101) == 2, 0);
+        assert!(calculate_redeem_fee(&fees, 1) == 1);
+        assert!(calculate_redeem_fee(&fees, 99) == 1);
+        assert!(calculate_redeem_fee(&fees, 100) == 1);
+        assert!(calculate_redeem_fee(&fees, 101) == 2);
 
         std::unit_test::destroy(fees);
         scenario.end();

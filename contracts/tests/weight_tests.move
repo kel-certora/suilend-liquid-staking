@@ -66,8 +66,8 @@ module liquid_staking::weight_tests {
         let sui = coin::mint_for_testing(100 * MIST_PER_SUI, scenario.ctx());
         let lst = lst_info.mint(&mut system_state, sui, scenario.ctx());
 
-        assert!(lst_info.total_lst_supply() == 100 * MIST_PER_SUI, 0);
-        assert!(lst_info.storage().total_sui_supply() == 100 * MIST_PER_SUI, 0);
+        assert!(lst_info.total_lst_supply() == 100 * MIST_PER_SUI);
+        assert!(lst_info.storage().total_sui_supply() == 100 * MIST_PER_SUI);
 
         let (mut weight_hook, weight_hook_admin_cap) = weight::new(admin_cap, scenario.ctx());
 
@@ -84,14 +84,8 @@ module liquid_staking::weight_tests {
 
         weight_hook.rebalance(&mut system_state, &mut lst_info, scenario.ctx());
 
-        assert!(
-            lst_info.storage().validators().borrow(0).total_sui_amount() == 25 * MIST_PER_SUI,
-            0,
-        );
-        assert!(
-            lst_info.storage().validators().borrow(1).total_sui_amount() == 75 * MIST_PER_SUI,
-            0,
-        );
+        assert!(lst_info.storage().validators().borrow(0).total_sui_amount() == 25 * MIST_PER_SUI);
+        assert!(lst_info.storage().validators().borrow(1).total_sui_amount() == 75 * MIST_PER_SUI);
 
         weight_hook.set_validator_addresses_and_weights(
             &weight_hook_admin_cap,
@@ -104,18 +98,15 @@ module liquid_staking::weight_tests {
         );
         weight_hook.rebalance(&mut system_state, &mut lst_info, scenario.ctx());
 
-        assert!(lst_info.storage().validators().borrow(0).total_sui_amount() == 0, 0);
-        assert!(lst_info.storage().validators().borrow(1).total_sui_amount() == 0, 0);
-        assert!(
-            lst_info.storage().validators().borrow(2).total_sui_amount() == 100 * MIST_PER_SUI,
-            0,
-        );
+        assert!(lst_info.storage().validators().borrow(0).total_sui_amount() == 0);
+        assert!(lst_info.storage().validators().borrow(1).total_sui_amount() == 0);
+        assert!(lst_info.storage().validators().borrow(2).total_sui_amount() == 100 * MIST_PER_SUI);
 
         // test update fees
         let new_fees = fees::new_builder(scenario.ctx()).set_sui_mint_fee_bps(100).to_fee_config();
         weight_hook.update_fees(&weight_hook_admin_cap, &mut lst_info, new_fees);
 
-        assert!(lst_info.fee_config().sui_mint_fee_bps() == 100, 0);
+        assert!(lst_info.fee_config().sui_mint_fee_bps() == 100);
 
         // mint some lst
         let sui = coin::mint_for_testing(100 * MIST_PER_SUI, scenario.ctx());
@@ -128,7 +119,7 @@ module liquid_staking::weight_tests {
             &mut system_state,
             scenario.ctx(),
         );
-        assert!(collected_fees.value() == MIST_PER_SUI, 0);
+        assert!(collected_fees.value() == MIST_PER_SUI);
 
         // sharing to make sure shared object deletion actually works lol
         transfer::public_share_object(weight_hook);
@@ -165,8 +156,8 @@ module liquid_staking::weight_tests {
         let sui = coin::mint_for_testing(100 * MIST_PER_SUI, scenario.ctx());
         let mut lst = lst_info.mint(&mut system_state, sui, scenario.ctx());
 
-        assert!(lst_info.total_lst_supply() == 100 * MIST_PER_SUI, 0);
-        assert!(lst_info.storage().total_sui_supply() == 100 * MIST_PER_SUI, 0);
+        assert!(lst_info.total_lst_supply() == 100 * MIST_PER_SUI);
+        assert!(lst_info.storage().total_sui_supply() == 100 * MIST_PER_SUI);
 
         let (mut weight_hook, weight_hook_admin_cap) = weight::new(admin_cap, scenario.ctx());
 
@@ -183,14 +174,8 @@ module liquid_staking::weight_tests {
 
         weight_hook.rebalance(&mut system_state, &mut lst_info, scenario.ctx());
 
-        assert!(
-            lst_info.storage().validators().borrow(0).total_sui_amount() == 25 * MIST_PER_SUI,
-            0,
-        );
-        assert!(
-            lst_info.storage().validators().borrow(1).total_sui_amount() == 75 * MIST_PER_SUI,
-            0,
-        );
+        assert!(lst_info.storage().validators().borrow(0).total_sui_amount() == 25 * MIST_PER_SUI);
+        assert!(lst_info.storage().validators().borrow(1).total_sui_amount() == 75 * MIST_PER_SUI);
 
         let lst_to_unstake = lst.split(10 * MIST_PER_SUI, scenario.ctx());
         let mut custom_redeem_request = lst_info.custom_redeem_request(
@@ -207,15 +192,13 @@ module liquid_staking::weight_tests {
 
         assert!(
             lst_info.storage().validators().borrow(0).total_sui_amount() == 25 * MIST_PER_SUI - 2_500_000_000,
-            0,
         );
         assert!(
             lst_info.storage().validators().borrow(1).total_sui_amount() == 75 * MIST_PER_SUI - 7_500_000_000,
-            0,
         );
 
         let sui = lst_info.custom_redeem(custom_redeem_request, &mut system_state, scenario.ctx());
-        assert!(sui.value() == 10 * MIST_PER_SUI - 100_000_000, 0); // 0.1 sui fee
+        assert!(sui.value() == 10 * MIST_PER_SUI - 100_000_000); // 0.1 sui fee
 
         test_scenario::return_shared(system_state);
 

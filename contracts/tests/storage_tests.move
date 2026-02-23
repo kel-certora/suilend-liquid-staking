@@ -62,61 +62,51 @@ module liquid_staking::storage_tests {
         test_scenario::return_shared(system_state);
 
         // check state
-        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.last_refresh_epoch() == scenario.ctx().epoch(), 0);
-        assert!(storage.validators().length() == 1, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].active_stake().is_none(), 0);
+        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI);
+        assert!(storage.last_refresh_epoch() == scenario.ctx().epoch());
+        assert!(storage.validators().length() == 1);
+        assert!(storage.validators()[0].total_sui_amount() == 100 * MIST_PER_SUI);
+        assert!(storage.validators()[0].active_stake().is_none());
         assert!(
             storage.validators()[0].inactive_stake().borrow().staked_sui_amount() == 100 * MIST_PER_SUI,
-            0,
         );
-        assert!(storage.validators()[0].exchange_rate().sui_amount() == 100 * MIST_PER_SUI, 0);
-        assert!(
-            storage.validators()[0].exchange_rate().pool_token_amount() == 100 * MIST_PER_SUI,
-            0,
-        );
+        assert!(storage.validators()[0].exchange_rate().sui_amount() == 100 * MIST_PER_SUI);
+        assert!(storage.validators()[0].exchange_rate().pool_token_amount() == 100 * MIST_PER_SUI);
 
         // stake now looks like [200, 100] => [300, 200]
         advance_epoch_with_reward_amounts(0, 200, &mut scenario);
 
         let mut system_state = scenario.take_shared<SuiSystemState>();
-        assert!(storage.refresh(&mut system_state, scenario.ctx()), 0);
+        assert!(storage.refresh(&mut system_state, scenario.ctx()));
         test_scenario::return_shared(system_state);
 
         // inactive stake should have been converted to active stake
-        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.last_refresh_epoch() == scenario.ctx().epoch(), 0);
-        assert!(storage.validators().length() == 1, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].active_stake().borrow().value() == 50 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].inactive_stake().is_none(), 0);
-        assert!(storage.validators()[0].exchange_rate().sui_amount() == 300 * MIST_PER_SUI, 0);
-        assert!(
-            storage.validators()[0].exchange_rate().pool_token_amount() == 150 * MIST_PER_SUI,
-            0,
-        );
+        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI);
+        assert!(storage.last_refresh_epoch() == scenario.ctx().epoch());
+        assert!(storage.validators().length() == 1);
+        assert!(storage.validators()[0].total_sui_amount() == 100 * MIST_PER_SUI);
+        assert!(storage.validators()[0].active_stake().borrow().value() == 50 * MIST_PER_SUI);
+        assert!(storage.validators()[0].inactive_stake().is_none());
+        assert!(storage.validators()[0].exchange_rate().sui_amount() == 300 * MIST_PER_SUI);
+        assert!(storage.validators()[0].exchange_rate().pool_token_amount() == 150 * MIST_PER_SUI);
 
         // stake now looks like [300, 200] => [450, 300]
         advance_epoch_with_reward_amounts(0, 300, &mut scenario);
 
         let mut system_state = scenario.take_shared<SuiSystemState>();
-        assert!(storage.refresh(&mut system_state, scenario.ctx()), 0);
+        assert!(storage.refresh(&mut system_state, scenario.ctx()));
 
-        assert!(storage.total_sui_supply() == 150 * MIST_PER_SUI, 0);
-        assert!(storage.last_refresh_epoch() == scenario.ctx().epoch(), 0);
-        assert!(storage.validators().length() == 1, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 150 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].active_stake().borrow().value() == 50 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].inactive_stake().is_none(), 0);
-        assert!(storage.validators()[0].exchange_rate().sui_amount() == 450 * MIST_PER_SUI, 0);
-        assert!(
-            storage.validators()[0].exchange_rate().pool_token_amount() == 150 * MIST_PER_SUI,
-            0,
-        );
+        assert!(storage.total_sui_supply() == 150 * MIST_PER_SUI);
+        assert!(storage.last_refresh_epoch() == scenario.ctx().epoch());
+        assert!(storage.validators().length() == 1);
+        assert!(storage.validators()[0].total_sui_amount() == 150 * MIST_PER_SUI);
+        assert!(storage.validators()[0].active_stake().borrow().value() == 50 * MIST_PER_SUI);
+        assert!(storage.validators()[0].inactive_stake().is_none());
+        assert!(storage.validators()[0].exchange_rate().sui_amount() == 450 * MIST_PER_SUI);
+        assert!(storage.validators()[0].exchange_rate().pool_token_amount() == 150 * MIST_PER_SUI);
 
         // check idempotency
-        assert!(!storage.refresh(&mut system_state, scenario.ctx()), 0);
+        assert!(!storage.refresh(&mut system_state, scenario.ctx()));
         test_scenario::return_shared(system_state);
 
         std::unit_test::destroy(storage);
@@ -132,19 +122,18 @@ module liquid_staking::storage_tests {
         let staked_sui = stake_with(0, 50, &mut scenario);
 
         let mut storage = new(scenario.ctx());
-        assert!(storage.total_sui_supply() == 0, 0);
+        assert!(storage.total_sui_supply() == 0);
 
         let mut system_state = scenario.take_shared<SuiSystemState>();
 
         storage.join_stake(&mut system_state, staked_sui, scenario.ctx());
 
-        assert!(storage.validators().length() == 1, 0);
-        assert!(storage.total_sui_supply() == 50 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 50 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].active_stake().is_none(), 0);
+        assert!(storage.validators().length() == 1);
+        assert!(storage.total_sui_supply() == 50 * MIST_PER_SUI);
+        assert!(storage.validators()[0].total_sui_amount() == 50 * MIST_PER_SUI);
+        assert!(storage.validators()[0].active_stake().is_none());
         assert!(
             storage.validators()[0].inactive_stake().borrow().staked_sui_amount() == 50 * MIST_PER_SUI,
-            0,
         );
 
         // Withdraw the stake before refresh
@@ -155,22 +144,22 @@ module liquid_staking::storage_tests {
             scenario.ctx(),
         );
 
-        assert!(unstaked_sui == 50 * MIST_PER_SUI, 0);
-        assert!(storage.total_sui_supply() == 50 * MIST_PER_SUI, 0);
-        assert!(storage.sui_pool().value() == 50 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 0, 0);
-        assert!(storage.validators()[0].active_stake().is_none(), 0);
-        assert!(storage.validators()[0].inactive_stake().is_none(), 0);
+        assert!(unstaked_sui == 50 * MIST_PER_SUI);
+        assert!(storage.total_sui_supply() == 50 * MIST_PER_SUI);
+        assert!(storage.sui_pool().value() == 50 * MIST_PER_SUI);
+        assert!(storage.validators()[0].total_sui_amount() == 0);
+        assert!(storage.validators()[0].active_stake().is_none());
+        assert!(storage.validators()[0].inactive_stake().is_none());
 
         test_scenario::return_shared(system_state);
         advance_epoch_with_reward_amounts(0, 0, &mut scenario);
 
         let mut system_state = scenario.take_shared<SuiSystemState>();
-        assert!(storage.refresh(&mut system_state, scenario.ctx()), 0);
+        assert!(storage.refresh(&mut system_state, scenario.ctx()));
 
-        assert!(storage.total_sui_supply() == 50 * MIST_PER_SUI, 0);
-        assert!(storage.sui_pool().value() == 50 * MIST_PER_SUI, 0);
-        assert!(storage.validators().length() == 0, 0); // Validator should be removed as it's empty
+        assert!(storage.total_sui_supply() == 50 * MIST_PER_SUI);
+        assert!(storage.sui_pool().value() == 50 * MIST_PER_SUI);
+        assert!(storage.validators().length() == 0); // Validator should be removed as it's empty
 
         test_scenario::return_shared(system_state);
         std::unit_test::destroy(storage);
@@ -186,20 +175,19 @@ module liquid_staking::storage_tests {
         let staked_sui = stake_with(0, 100, &mut scenario);
 
         let mut storage = new(scenario.ctx());
-        assert!(storage.total_sui_supply() == 0, 0);
+        assert!(storage.total_sui_supply() == 0);
 
         let mut system_state = scenario.take_shared<SuiSystemState>();
 
         storage.join_stake(&mut system_state, staked_sui, scenario.ctx());
         test_scenario::return_shared(system_state);
 
-        assert!(storage.validators().length() == 1, 0);
-        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].active_stake().is_none(), 0);
+        assert!(storage.validators().length() == 1);
+        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI);
+        assert!(storage.validators()[0].total_sui_amount() == 100 * MIST_PER_SUI);
+        assert!(storage.validators()[0].active_stake().is_none());
         assert!(
             storage.validators()[0].inactive_stake().borrow().staked_sui_amount() == 100 * MIST_PER_SUI,
-            0,
         );
 
         // stake now looks like [200, 100] => [300, 200]
@@ -210,16 +198,13 @@ module liquid_staking::storage_tests {
         let mut system_state = scenario.take_shared<SuiSystemState>();
         storage.refresh(&mut system_state, scenario.ctx());
 
-        assert!(storage.validators().length() == 1, 0);
-        assert!(storage.total_sui_supply() == 150 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 150 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].active_stake().borrow().value() == 50 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].inactive_stake().is_none(), 0);
-        assert!(storage.validators()[0].exchange_rate().sui_amount() == 450 * MIST_PER_SUI, 0);
-        assert!(
-            storage.validators()[0].exchange_rate().pool_token_amount() == 150 * MIST_PER_SUI,
-            0,
-        );
+        assert!(storage.validators().length() == 1);
+        assert!(storage.total_sui_supply() == 150 * MIST_PER_SUI);
+        assert!(storage.validators()[0].total_sui_amount() == 150 * MIST_PER_SUI);
+        assert!(storage.validators()[0].active_stake().borrow().value() == 50 * MIST_PER_SUI);
+        assert!(storage.validators()[0].inactive_stake().is_none());
+        assert!(storage.validators()[0].exchange_rate().sui_amount() == 450 * MIST_PER_SUI);
+        assert!(storage.validators()[0].exchange_rate().pool_token_amount() == 150 * MIST_PER_SUI);
 
         test_scenario::return_shared(system_state);
         std::unit_test::destroy(storage);
@@ -235,27 +220,23 @@ module liquid_staking::storage_tests {
         let staked_sui = stake_with(0, 100, &mut scenario);
 
         let mut storage = new(scenario.ctx());
-        assert!(storage.total_sui_supply() == 0, 0);
+        assert!(storage.total_sui_supply() == 0);
 
         let mut system_state = scenario.take_shared<SuiSystemState>();
 
         storage.join_stake(&mut system_state, staked_sui, scenario.ctx());
         test_scenario::return_shared(system_state);
 
-        assert!(storage.validators().length() == 1, 0);
-        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].active_stake().is_none(), 0);
+        assert!(storage.validators().length() == 1);
+        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI);
+        assert!(storage.validators()[0].total_sui_amount() == 100 * MIST_PER_SUI);
+        assert!(storage.validators()[0].active_stake().is_none());
         assert!(
             storage.validators()[0].inactive_stake().borrow().staked_sui_amount() == 100 * MIST_PER_SUI,
-            0,
         );
-        assert!(storage.validators()[0].exchange_rate().sui_amount() == 100 * MIST_PER_SUI, 0);
-        assert!(
-            storage.validators()[0].exchange_rate().pool_token_amount() == 100 * MIST_PER_SUI,
-            0,
-        );
-        assert!(storage.last_refresh_epoch() == 1, 0);
+        assert!(storage.validators()[0].exchange_rate().sui_amount() == 100 * MIST_PER_SUI);
+        assert!(storage.validators()[0].exchange_rate().pool_token_amount() == 100 * MIST_PER_SUI);
+        assert!(storage.last_refresh_epoch() == 1);
 
         // safe mode
         test_scenario::next_epoch(&mut scenario, @0x0);
@@ -264,17 +245,14 @@ module liquid_staking::storage_tests {
         storage.refresh(&mut system_state, scenario.ctx());
 
         // storage should use the old exchange rate
-        assert!(storage.validators().length() == 1, 0);
-        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].active_stake().borrow().value() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].inactive_stake().is_none(), 0);
-        assert!(storage.validators()[0].exchange_rate().sui_amount() == 100 * MIST_PER_SUI, 0);
-        assert!(
-            storage.validators()[0].exchange_rate().pool_token_amount() == 100 * MIST_PER_SUI,
-            0,
-        );
-        assert!(storage.last_refresh_epoch() == 2, 0);
+        assert!(storage.validators().length() == 1);
+        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI);
+        assert!(storage.validators()[0].total_sui_amount() == 100 * MIST_PER_SUI);
+        assert!(storage.validators()[0].active_stake().borrow().value() == 100 * MIST_PER_SUI);
+        assert!(storage.validators()[0].inactive_stake().is_none());
+        assert!(storage.validators()[0].exchange_rate().sui_amount() == 100 * MIST_PER_SUI);
+        assert!(storage.validators()[0].exchange_rate().pool_token_amount() == 100 * MIST_PER_SUI);
+        assert!(storage.last_refresh_epoch() == 2);
 
         test_scenario::return_shared(system_state);
         std::unit_test::destroy(storage);
@@ -290,14 +268,14 @@ module liquid_staking::storage_tests {
 
         scenario.next_tx(@0x0);
 
-        assert!(storage.total_sui_supply() == 0, 0);
-        assert!(storage.sui_pool().value() == 0, 0);
+        assert!(storage.total_sui_supply() == 0);
+        assert!(storage.sui_pool().value() == 0);
 
         let sui = balance::create_for_testing<SUI>(50 * MIST_PER_SUI);
         storage.join_to_sui_pool(sui);
 
-        assert!(storage.total_sui_supply() == 50 * MIST_PER_SUI, 0);
-        assert!(storage.sui_pool().value() == 50 * MIST_PER_SUI, 0);
+        assert!(storage.total_sui_supply() == 50 * MIST_PER_SUI);
+        assert!(storage.sui_pool().value() == 50 * MIST_PER_SUI);
 
         std::unit_test::destroy(storage);
         scenario.end();
@@ -319,35 +297,29 @@ module liquid_staking::storage_tests {
         advance_epoch_with_reward_amounts(0, 400, &mut scenario);
 
         let mut storage = new(scenario.ctx());
-        assert!(storage.total_sui_supply() == 0, 0);
+        assert!(storage.total_sui_supply() == 0);
 
         let mut system_state = scenario.take_shared<SuiSystemState>();
 
         storage.join_stake(&mut system_state, active_staked_sui_1, scenario.ctx());
 
-        assert!(storage.validators().length() == 1, 0);
-        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].active_stake().borrow().value() == 50 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].inactive_stake().is_none(), 0);
-        assert!(storage.validators()[0].exchange_rate().sui_amount() == 400 * MIST_PER_SUI, 0);
-        assert!(
-            storage.validators()[0].exchange_rate().pool_token_amount() == 200 * MIST_PER_SUI,
-            0,
-        );
+        assert!(storage.validators().length() == 1);
+        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI);
+        assert!(storage.validators()[0].total_sui_amount() == 100 * MIST_PER_SUI);
+        assert!(storage.validators()[0].active_stake().borrow().value() == 50 * MIST_PER_SUI);
+        assert!(storage.validators()[0].inactive_stake().is_none());
+        assert!(storage.validators()[0].exchange_rate().sui_amount() == 400 * MIST_PER_SUI);
+        assert!(storage.validators()[0].exchange_rate().pool_token_amount() == 200 * MIST_PER_SUI);
 
         storage.join_stake(&mut system_state, active_staked_sui_2, scenario.ctx());
 
-        assert!(storage.validators().length() == 1, 0);
-        assert!(storage.total_sui_supply() == 200 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 200 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].active_stake().borrow().value() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].inactive_stake().is_none(), 0);
-        assert!(storage.validators()[0].exchange_rate().sui_amount() == 400 * MIST_PER_SUI, 0);
-        assert!(
-            storage.validators()[0].exchange_rate().pool_token_amount() == 200 * MIST_PER_SUI,
-            0,
-        );
+        assert!(storage.validators().length() == 1);
+        assert!(storage.total_sui_supply() == 200 * MIST_PER_SUI);
+        assert!(storage.validators()[0].total_sui_amount() == 200 * MIST_PER_SUI);
+        assert!(storage.validators()[0].active_stake().borrow().value() == 100 * MIST_PER_SUI);
+        assert!(storage.validators()[0].inactive_stake().is_none());
+        assert!(storage.validators()[0].exchange_rate().sui_amount() == 400 * MIST_PER_SUI);
+        assert!(storage.validators()[0].exchange_rate().pool_token_amount() == 200 * MIST_PER_SUI);
 
         test_scenario::return_shared(system_state);
         std::unit_test::destroy(storage);
@@ -367,43 +339,35 @@ module liquid_staking::storage_tests {
         scenario.next_tx(@0x0);
 
         let mut storage = new(scenario.ctx());
-        assert!(storage.total_sui_supply() == 0, 0);
+        assert!(storage.total_sui_supply() == 0);
 
         let mut system_state = scenario.take_shared<SuiSystemState>();
 
         storage.join_stake(&mut system_state, staked_sui_1, scenario.ctx());
 
-        assert!(storage.last_refresh_epoch() == scenario.ctx().epoch(), 0);
-        assert!(storage.total_sui_supply() == 50 * MIST_PER_SUI, 0);
-        assert!(storage.validators().length() == 1, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 50 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].active_stake().is_none(), 0);
+        assert!(storage.last_refresh_epoch() == scenario.ctx().epoch());
+        assert!(storage.total_sui_supply() == 50 * MIST_PER_SUI);
+        assert!(storage.validators().length() == 1);
+        assert!(storage.validators()[0].total_sui_amount() == 50 * MIST_PER_SUI);
+        assert!(storage.validators()[0].active_stake().is_none());
         assert!(
             storage.validators()[0].inactive_stake().borrow().staked_sui_amount() == 50 * MIST_PER_SUI,
-            0,
         );
-        assert!(storage.validators()[0].exchange_rate().sui_amount() == 100 * MIST_PER_SUI, 0);
-        assert!(
-            storage.validators()[0].exchange_rate().pool_token_amount() == 100 * MIST_PER_SUI,
-            0,
-        );
+        assert!(storage.validators()[0].exchange_rate().sui_amount() == 100 * MIST_PER_SUI);
+        assert!(storage.validators()[0].exchange_rate().pool_token_amount() == 100 * MIST_PER_SUI);
 
         storage.join_stake(&mut system_state, staked_sui_2, scenario.ctx());
 
-        assert!(storage.last_refresh_epoch() == scenario.ctx().epoch(), 0);
-        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.validators().length() == 1, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].active_stake().is_none(), 0);
+        assert!(storage.last_refresh_epoch() == scenario.ctx().epoch());
+        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI);
+        assert!(storage.validators().length() == 1);
+        assert!(storage.validators()[0].total_sui_amount() == 100 * MIST_PER_SUI);
+        assert!(storage.validators()[0].active_stake().is_none());
         assert!(
             storage.validators()[0].inactive_stake().borrow().staked_sui_amount() == 100 * MIST_PER_SUI,
-            0,
         );
-        assert!(storage.validators()[0].exchange_rate().sui_amount() == 100 * MIST_PER_SUI, 0);
-        assert!(
-            storage.validators()[0].exchange_rate().pool_token_amount() == 100 * MIST_PER_SUI,
-            0,
-        );
+        assert!(storage.validators()[0].exchange_rate().sui_amount() == 100 * MIST_PER_SUI);
+        assert!(storage.validators()[0].exchange_rate().pool_token_amount() == 100 * MIST_PER_SUI);
 
         test_scenario::return_shared(system_state);
         std::unit_test::destroy(storage);
@@ -428,7 +392,7 @@ module liquid_staking::storage_tests {
         advance_epoch_with_reward_amounts(0, 0, &mut scenario);
 
         let mut system_state = scenario.take_shared<SuiSystemState>();
-        assert!(!system_state.active_validator_addresses().contains(&@0x1), 0);
+        assert!(!system_state.active_validator_addresses().contains(&@0x1));
 
         let mut storage = new(scenario.ctx());
         storage.join_stake(&mut system_state, staked_sui_1, scenario.ctx());
@@ -461,11 +425,11 @@ module liquid_staking::storage_tests {
         advance_epoch_with_reward_amounts(0, 0, &mut scenario);
 
         let mut system_state = scenario.take_shared<SuiSystemState>();
-        assert!(!system_state.active_validator_addresses().contains(&@0x1), 0);
+        assert!(!system_state.active_validator_addresses().contains(&@0x1));
 
         storage.refresh(&mut system_state, scenario.ctx());
-        assert!(storage.validators().length() == 0, 0); // got removed
-        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI, 0);
+        assert!(storage.validators().length() == 0); // got removed
+        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI);
 
         test_scenario::return_shared(system_state);
         std::unit_test::destroy(storage);
@@ -497,7 +461,7 @@ module liquid_staking::storage_tests {
         advance_epoch_with_reward_amounts(0, 0, &mut scenario);
 
         let mut system_state = scenario.take_shared<SuiSystemState>();
-        assert!(!system_state.active_validator_addresses().contains(&@0x1), 0);
+        assert!(!system_state.active_validator_addresses().contains(&@0x1));
         test_scenario::return_shared(system_state);
 
         // readd with same address
@@ -634,7 +598,7 @@ module liquid_staking::storage_tests {
 
         let mut system_state = scenario.take_shared<SuiSystemState>();
         let mut storage = new(scenario.ctx());
-        assert!(storage.total_sui_supply() == 0, 0);
+        assert!(storage.total_sui_supply() == 0);
 
         storage.join_stake(&mut system_state, active_staked_sui_1, scenario.ctx());
 
@@ -661,7 +625,7 @@ module liquid_staking::storage_tests {
         scenario.next_tx(@0x0);
 
         let mut storage = new(scenario.ctx());
-        assert!(storage.total_sui_supply() == 0, 0);
+        assert!(storage.total_sui_supply() == 0);
 
         let mut system_state = scenario.take_shared<SuiSystemState>();
 
@@ -669,31 +633,24 @@ module liquid_staking::storage_tests {
         storage.join_stake(&mut system_state, active_staked_sui_1, scenario.ctx());
         storage.join_stake(&mut system_state, active_staked_sui_2, scenario.ctx());
 
-        assert!(storage.validators().length() == 2, 0);
-        assert!(storage.total_sui_supply() == 500 * MIST_PER_SUI, 0);
+        assert!(storage.validators().length() == 2);
+        assert!(storage.total_sui_supply() == 500 * MIST_PER_SUI);
 
-        assert!(storage.validators()[0].total_sui_amount() == 300 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].validator_address() == @0x0, 0);
-        assert!(storage.validators()[0].active_stake().borrow().value() == 100 * MIST_PER_SUI, 0);
+        assert!(storage.validators()[0].total_sui_amount() == 300 * MIST_PER_SUI);
+        assert!(storage.validators()[0].validator_address() == @0x0);
+        assert!(storage.validators()[0].active_stake().borrow().value() == 100 * MIST_PER_SUI);
         assert!(
             storage.validators()[0].inactive_stake().borrow().staked_sui_amount() == 100 * MIST_PER_SUI,
-            0,
         );
-        assert!(storage.validators()[0].exchange_rate().sui_amount() == 400 * MIST_PER_SUI, 0);
-        assert!(
-            storage.validators()[0].exchange_rate().pool_token_amount() == 200 * MIST_PER_SUI,
-            0,
-        );
+        assert!(storage.validators()[0].exchange_rate().sui_amount() == 400 * MIST_PER_SUI);
+        assert!(storage.validators()[0].exchange_rate().pool_token_amount() == 200 * MIST_PER_SUI);
 
-        assert!(storage.validators()[1].total_sui_amount() == 200 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[1].validator_address() == @0x1, 0);
-        assert!(storage.validators()[1].active_stake().borrow().value() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[1].inactive_stake().is_none(), 0);
-        assert!(storage.validators()[1].exchange_rate().sui_amount() == 400 * MIST_PER_SUI, 0);
-        assert!(
-            storage.validators()[1].exchange_rate().pool_token_amount() == 200 * MIST_PER_SUI,
-            0,
-        );
+        assert!(storage.validators()[1].total_sui_amount() == 200 * MIST_PER_SUI);
+        assert!(storage.validators()[1].validator_address() == @0x1);
+        assert!(storage.validators()[1].active_stake().borrow().value() == 100 * MIST_PER_SUI);
+        assert!(storage.validators()[1].inactive_stake().is_none());
+        assert!(storage.validators()[1].exchange_rate().sui_amount() == 400 * MIST_PER_SUI);
+        assert!(storage.validators()[1].exchange_rate().pool_token_amount() == 200 * MIST_PER_SUI);
 
         test_scenario::return_shared(system_state);
         std::unit_test::destroy(storage);
@@ -710,21 +667,21 @@ module liquid_staking::storage_tests {
 
         scenario.next_tx(@0x0);
 
-        assert!(storage.total_sui_supply() == 0, 0);
+        assert!(storage.total_sui_supply() == 0);
 
         let sui = balance::create_for_testing<SUI>(50 * MIST_PER_SUI);
         storage.join_to_sui_pool(sui);
 
-        assert!(storage.total_sui_supply() == 50 * MIST_PER_SUI, 0);
+        assert!(storage.total_sui_supply() == 50 * MIST_PER_SUI);
 
         let sui = storage.split_up_to_n_sui_from_sui_pool(25 * MIST_PER_SUI);
-        assert!(storage.total_sui_supply() == 25 * MIST_PER_SUI, 0);
-        assert!(sui.value() == 25 * MIST_PER_SUI, 0);
+        assert!(storage.total_sui_supply() == 25 * MIST_PER_SUI);
+        assert!(sui.value() == 25 * MIST_PER_SUI);
         std::unit_test::destroy(sui);
 
         let sui = storage.split_up_to_n_sui_from_sui_pool(50 * MIST_PER_SUI);
-        assert!(storage.total_sui_supply() == 0 * MIST_PER_SUI, 0);
-        assert!(sui.value() == 25 * MIST_PER_SUI, 0);
+        assert!(storage.total_sui_supply() == 0);
+        assert!(sui.value() == 25 * MIST_PER_SUI);
         std::unit_test::destroy(sui);
 
         std::unit_test::destroy(storage);
@@ -746,7 +703,7 @@ module liquid_staking::storage_tests {
 
         let mut storage = new(scenario.ctx());
         storage.join_stake(&mut system_state, staked_sui_1, scenario.ctx());
-        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI, 0);
+        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI);
 
         let amount = storage.unstake_approx_n_sui_from_inactive_stake(
             &mut system_state,
@@ -755,15 +712,14 @@ module liquid_staking::storage_tests {
             scenario.ctx(),
         );
 
-        assert!(amount == 0, 0);
-        assert!(storage.validators().length() == 1, 0);
-        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.sui_pool().value() == 0, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].active_stake().is_none(), 0);
+        assert!(amount == 0);
+        assert!(storage.validators().length() == 1);
+        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI);
+        assert!(storage.sui_pool().value() == 0);
+        assert!(storage.validators()[0].total_sui_amount() == 100 * MIST_PER_SUI);
+        assert!(storage.validators()[0].active_stake().is_none());
         assert!(
             storage.validators()[0].inactive_stake().borrow().staked_sui_amount() == 100 * MIST_PER_SUI,
-            0,
         );
 
         std::unit_test::destroy(storage);
@@ -783,7 +739,7 @@ module liquid_staking::storage_tests {
 
         let mut storage = new(scenario.ctx());
         storage.join_stake(&mut system_state, staked_sui_1, scenario.ctx());
-        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI, 0);
+        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI);
 
         let amount = storage.unstake_approx_n_sui_from_inactive_stake(
             &mut system_state,
@@ -792,13 +748,13 @@ module liquid_staking::storage_tests {
             scenario.ctx(),
         );
 
-        assert!(amount  == 100 * MIST_PER_SUI, 0);
-        assert!(storage.validators().length() == 1, 0);
-        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.sui_pool().value() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 0, 0);
-        assert!(storage.validators()[0].active_stake().is_none(), 0);
-        assert!(storage.validators()[0].inactive_stake().is_none(), 0);
+        assert!(amount  == 100 * MIST_PER_SUI);
+        assert!(storage.validators().length() == 1);
+        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI);
+        assert!(storage.sui_pool().value() == 100 * MIST_PER_SUI);
+        assert!(storage.validators()[0].total_sui_amount() == 0);
+        assert!(storage.validators()[0].active_stake().is_none());
+        assert!(storage.validators()[0].inactive_stake().is_none());
 
         std::unit_test::destroy(storage);
         test_scenario::return_shared(system_state);
@@ -817,7 +773,7 @@ module liquid_staking::storage_tests {
 
         let mut storage = new(scenario.ctx());
         storage.join_stake(&mut system_state, staked_sui_1, scenario.ctx());
-        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI, 0);
+        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI);
 
         let amount = storage.unstake_approx_n_sui_from_inactive_stake(
             &mut system_state,
@@ -826,15 +782,14 @@ module liquid_staking::storage_tests {
             scenario.ctx(),
         );
 
-        assert!(amount  == 50 * MIST_PER_SUI, 0);
-        assert!(storage.validators().length() == 1, 0);
-        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.sui_pool().value() == 50 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 50 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].active_stake().is_none(), 0);
+        assert!(amount  == 50 * MIST_PER_SUI);
+        assert!(storage.validators().length() == 1);
+        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI);
+        assert!(storage.sui_pool().value() == 50 * MIST_PER_SUI);
+        assert!(storage.validators()[0].total_sui_amount() == 50 * MIST_PER_SUI);
+        assert!(storage.validators()[0].active_stake().is_none());
         assert!(
             storage.validators()[0].inactive_stake().borrow().staked_sui_amount() == 50 * MIST_PER_SUI,
-            0,
         );
 
         std::unit_test::destroy(storage);
@@ -854,7 +809,7 @@ module liquid_staking::storage_tests {
 
         let mut storage = new(scenario.ctx());
         storage.join_stake(&mut system_state, staked_sui_1, scenario.ctx());
-        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI, 0);
+        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI);
 
         let amount = storage.unstake_approx_n_sui_from_inactive_stake(
             &mut system_state,
@@ -863,15 +818,14 @@ module liquid_staking::storage_tests {
             scenario.ctx(),
         );
 
-        assert!(amount  == MIST_PER_SUI, 0);
-        assert!(storage.validators().length() == 1, 0);
-        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.sui_pool().value() == MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 99 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].active_stake().is_none(), 0);
+        assert!(amount  == MIST_PER_SUI);
+        assert!(storage.validators().length() == 1);
+        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI);
+        assert!(storage.sui_pool().value() == MIST_PER_SUI);
+        assert!(storage.validators()[0].total_sui_amount() == 99 * MIST_PER_SUI);
+        assert!(storage.validators()[0].active_stake().is_none());
         assert!(
             storage.validators()[0].inactive_stake().borrow().staked_sui_amount() == 99 * MIST_PER_SUI,
-            0,
         );
 
         std::unit_test::destroy(storage);
@@ -891,7 +845,7 @@ module liquid_staking::storage_tests {
 
         let mut storage = new(scenario.ctx());
         storage.join_stake(&mut system_state, staked_sui_1, scenario.ctx());
-        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI, 0);
+        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI);
 
         let amount = storage.unstake_approx_n_sui_from_inactive_stake(
             &mut system_state,
@@ -900,13 +854,13 @@ module liquid_staking::storage_tests {
             scenario.ctx(),
         );
 
-        assert!(amount == 100 * MIST_PER_SUI, 0);
-        assert!(storage.validators().length() == 1, 0);
-        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.sui_pool().value() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 0, 0);
-        assert!(storage.validators()[0].active_stake().is_none(), 0);
-        assert!(storage.validators()[0].inactive_stake().is_none(), 0);
+        assert!(amount == 100 * MIST_PER_SUI);
+        assert!(storage.validators().length() == 1);
+        assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI);
+        assert!(storage.sui_pool().value() == 100 * MIST_PER_SUI);
+        assert!(storage.validators()[0].total_sui_amount() == 0);
+        assert!(storage.validators()[0].active_stake().is_none());
+        assert!(storage.validators()[0].inactive_stake().is_none());
 
         std::unit_test::destroy(storage);
         test_scenario::return_shared(system_state);
@@ -931,7 +885,7 @@ module liquid_staking::storage_tests {
         let mut storage = new(scenario.ctx());
 
         storage.join_stake(&mut system_state, staked_sui_1, scenario.ctx());
-        assert!(storage.total_sui_supply() == 200 * MIST_PER_SUI, 0);
+        assert!(storage.total_sui_supply() == 200 * MIST_PER_SUI);
 
         let amount = storage.unstake_approx_n_sui_from_active_stake(
             &mut system_state,
@@ -940,13 +894,13 @@ module liquid_staking::storage_tests {
             scenario.ctx(),
         );
 
-        assert!(amount == 0, 0);
-        assert!(storage.validators().length() == 1, 0);
-        assert!(storage.total_sui_supply() == 200 * MIST_PER_SUI, 0);
-        assert!(storage.sui_pool().value() == 0, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 200 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].active_stake().borrow().value() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].inactive_stake().is_none(), 0);
+        assert!(amount == 0);
+        assert!(storage.validators().length() == 1);
+        assert!(storage.total_sui_supply() == 200 * MIST_PER_SUI);
+        assert!(storage.sui_pool().value() == 0);
+        assert!(storage.validators()[0].total_sui_amount() == 200 * MIST_PER_SUI);
+        assert!(storage.validators()[0].active_stake().borrow().value() == 100 * MIST_PER_SUI);
+        assert!(storage.validators()[0].inactive_stake().is_none());
 
         std::unit_test::destroy(storage);
         test_scenario::return_shared(system_state);
@@ -971,7 +925,7 @@ module liquid_staking::storage_tests {
         storage.refresh(&mut system_state, scenario.ctx());
 
         storage.join_stake(&mut system_state, staked_sui_1, scenario.ctx());
-        assert!(storage.total_sui_supply() == 200 * MIST_PER_SUI, 0);
+        assert!(storage.total_sui_supply() == 200 * MIST_PER_SUI);
 
         let amount = storage.unstake_approx_n_sui_from_active_stake(
             &mut system_state,
@@ -980,13 +934,13 @@ module liquid_staking::storage_tests {
             scenario.ctx(),
         );
 
-        assert!(amount == 200 * MIST_PER_SUI, 0);
-        assert!(storage.validators().length() == 1, 0);
-        assert!(storage.total_sui_supply() == 200 * MIST_PER_SUI, 0);
-        assert!(storage.sui_pool().value() == 200 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 0, 0);
-        assert!(storage.validators()[0].active_stake().is_none(), 0);
-        assert!(storage.validators()[0].inactive_stake().is_none(), 0);
+        assert!(amount == 200 * MIST_PER_SUI);
+        assert!(storage.validators().length() == 1);
+        assert!(storage.total_sui_supply() == 200 * MIST_PER_SUI);
+        assert!(storage.sui_pool().value() == 200 * MIST_PER_SUI);
+        assert!(storage.validators()[0].total_sui_amount() == 0);
+        assert!(storage.validators()[0].active_stake().is_none());
+        assert!(storage.validators()[0].inactive_stake().is_none());
 
         std::unit_test::destroy(storage);
         test_scenario::return_shared(system_state);
@@ -1011,7 +965,7 @@ module liquid_staking::storage_tests {
         storage.refresh(&mut system_state, scenario.ctx());
 
         storage.join_stake(&mut system_state, staked_sui_1, scenario.ctx());
-        assert!(storage.total_sui_supply() == 200 * MIST_PER_SUI, 0);
+        assert!(storage.total_sui_supply() == 200 * MIST_PER_SUI);
 
         let amount = storage.unstake_approx_n_sui_from_active_stake(
             &mut system_state,
@@ -1020,13 +974,13 @@ module liquid_staking::storage_tests {
             scenario.ctx(),
         );
 
-        assert!(amount == 100 * MIST_PER_SUI, 0);
-        assert!(storage.validators().length() == 1, 0);
-        assert!(storage.total_sui_supply() == 200 * MIST_PER_SUI, 0);
-        assert!(storage.sui_pool().value() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].active_stake().borrow().value() == 50 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].inactive_stake().is_none(), 0);
+        assert!(amount == 100 * MIST_PER_SUI);
+        assert!(storage.validators().length() == 1);
+        assert!(storage.total_sui_supply() == 200 * MIST_PER_SUI);
+        assert!(storage.sui_pool().value() == 100 * MIST_PER_SUI);
+        assert!(storage.validators()[0].total_sui_amount() == 100 * MIST_PER_SUI);
+        assert!(storage.validators()[0].active_stake().borrow().value() == 50 * MIST_PER_SUI);
+        assert!(storage.validators()[0].inactive_stake().is_none());
 
         std::unit_test::destroy(storage);
         test_scenario::return_shared(system_state);
@@ -1051,7 +1005,7 @@ module liquid_staking::storage_tests {
         storage.refresh(&mut system_state, scenario.ctx());
 
         storage.join_stake(&mut system_state, staked_sui_1, scenario.ctx());
-        assert!(storage.total_sui_supply() == 200 * MIST_PER_SUI, 0);
+        assert!(storage.total_sui_supply() == 200 * MIST_PER_SUI);
 
         let amount = storage.unstake_approx_n_sui_from_active_stake(
             &mut system_state,
@@ -1060,16 +1014,13 @@ module liquid_staking::storage_tests {
             scenario.ctx(),
         );
 
-        assert!(amount == 2, 0);
-        assert!(storage.validators().length() == 1, 0);
-        assert!(storage.total_sui_supply() == 200 * MIST_PER_SUI, 0);
-        assert!(storage.sui_pool().value() == 2, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 200 * MIST_PER_SUI - 2, 0);
-        assert!(
-            storage.validators()[0].active_stake().borrow().value() == 100 * MIST_PER_SUI - 1,
-            0,
-        );
-        assert!(storage.validators()[0].inactive_stake().is_none(), 0);
+        assert!(amount == 2);
+        assert!(storage.validators().length() == 1);
+        assert!(storage.total_sui_supply() == 200 * MIST_PER_SUI);
+        assert!(storage.sui_pool().value() == 2);
+        assert!(storage.validators()[0].total_sui_amount() == 200 * MIST_PER_SUI - 2);
+        assert!(storage.validators()[0].active_stake().borrow().value() == 100 * MIST_PER_SUI - 1);
+        assert!(storage.validators()[0].inactive_stake().is_none());
 
         std::unit_test::destroy(storage);
         test_scenario::return_shared(system_state);
@@ -1094,7 +1045,7 @@ module liquid_staking::storage_tests {
         storage.refresh(&mut system_state, scenario.ctx());
 
         storage.join_stake(&mut system_state, staked_sui_1, scenario.ctx());
-        assert!(storage.total_sui_supply() == 200 * MIST_PER_SUI, 0);
+        assert!(storage.total_sui_supply() == 200 * MIST_PER_SUI);
 
         let amount = storage.unstake_approx_n_sui_from_active_stake(
             &mut system_state,
@@ -1103,13 +1054,13 @@ module liquid_staking::storage_tests {
             scenario.ctx(),
         );
 
-        assert!(amount == 199 * MIST_PER_SUI + 2, 0);
-        assert!(storage.validators().length() == 1, 0);
-        assert!(storage.total_sui_supply() == 200 * MIST_PER_SUI, 0);
-        assert!(storage.sui_pool().value() == 199 * MIST_PER_SUI + 2, 0);
-        assert!(storage.validators()[0].total_sui_amount() == MIST_PER_SUI - 2, 0);
-        assert!(storage.validators()[0].active_stake().borrow().value() == MIST_PER_SUI / 2 - 1, 0);
-        assert!(storage.validators()[0].inactive_stake().is_none(), 0);
+        assert!(amount == 199 * MIST_PER_SUI + 2);
+        assert!(storage.validators().length() == 1);
+        assert!(storage.total_sui_supply() == 200 * MIST_PER_SUI);
+        assert!(storage.sui_pool().value() == 199 * MIST_PER_SUI + 2);
+        assert!(storage.validators()[0].total_sui_amount() == MIST_PER_SUI - 2);
+        assert!(storage.validators()[0].active_stake().borrow().value() == MIST_PER_SUI / 2 - 1);
+        assert!(storage.validators()[0].inactive_stake().is_none());
 
         std::unit_test::destroy(storage);
         test_scenario::return_shared(system_state);
@@ -1134,7 +1085,7 @@ module liquid_staking::storage_tests {
         storage.refresh(&mut system_state, scenario.ctx());
 
         storage.join_stake(&mut system_state, staked_sui_1, scenario.ctx());
-        assert!(storage.total_sui_supply() == 200 * MIST_PER_SUI, 0);
+        assert!(storage.total_sui_supply() == 200 * MIST_PER_SUI);
 
         let amount = storage.unstake_approx_n_sui_from_active_stake(
             &mut system_state,
@@ -1143,13 +1094,13 @@ module liquid_staking::storage_tests {
             scenario.ctx(),
         );
 
-        assert!(amount == 2 * MIST_PER_SUI + 2, 0);
-        assert!(storage.validators().length() == 1, 0);
-        assert!(storage.total_sui_supply() == 200 * MIST_PER_SUI, 0);
-        assert!(storage.sui_pool().value() == 2 * MIST_PER_SUI + 2, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 198 * MIST_PER_SUI - 2, 0);
-        assert!(storage.validators()[0].active_stake().borrow().value() == 99_000_000_000 - 1, 0);
-        assert!(storage.validators()[0].inactive_stake().is_none(), 0);
+        assert!(amount == 2 * MIST_PER_SUI + 2);
+        assert!(storage.validators().length() == 1);
+        assert!(storage.total_sui_supply() == 200 * MIST_PER_SUI);
+        assert!(storage.sui_pool().value() == 2 * MIST_PER_SUI + 2);
+        assert!(storage.validators()[0].total_sui_amount() == 198 * MIST_PER_SUI - 2);
+        assert!(storage.validators()[0].active_stake().borrow().value() == 99_000_000_000 - 1);
+        assert!(storage.validators()[0].inactive_stake().is_none());
 
         std::unit_test::destroy(storage);
         test_scenario::return_shared(system_state);
@@ -1175,7 +1126,7 @@ module liquid_staking::storage_tests {
         scenario.next_tx(@0x0);
 
         let mut storage = new(scenario.ctx());
-        assert!(storage.total_sui_supply() == 0, 0);
+        assert!(storage.total_sui_supply() == 0);
 
         let mut system_state = scenario.take_shared<SuiSystemState>();
 
@@ -1184,9 +1135,9 @@ module liquid_staking::storage_tests {
         storage.join_stake(&mut system_state, active_staked_sui_1, scenario.ctx());
         storage.join_stake(&mut system_state, active_staked_sui_2, scenario.ctx());
 
-        assert!(storage.total_sui_supply() == 600 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 300 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[1].total_sui_amount() == 200 * MIST_PER_SUI, 0);
+        assert!(storage.total_sui_supply() == 600 * MIST_PER_SUI);
+        assert!(storage.validators()[0].total_sui_amount() == 300 * MIST_PER_SUI);
+        assert!(storage.validators()[1].total_sui_amount() == 200 * MIST_PER_SUI);
 
         // start of test
         let sui = storage.split_n_sui(
@@ -1195,11 +1146,11 @@ module liquid_staking::storage_tests {
             scenario.ctx(),
         );
 
-        assert!(sui.value() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.total_sui_supply() == 500 * MIST_PER_SUI, 0);
-        assert!(storage.sui_pool().value() == 0, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 300 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[1].total_sui_amount() == 200 * MIST_PER_SUI, 0);
+        assert!(sui.value() == 100 * MIST_PER_SUI);
+        assert!(storage.total_sui_supply() == 500 * MIST_PER_SUI);
+        assert!(storage.sui_pool().value() == 0);
+        assert!(storage.validators()[0].total_sui_amount() == 300 * MIST_PER_SUI);
+        assert!(storage.validators()[1].total_sui_amount() == 200 * MIST_PER_SUI);
 
         test_scenario::return_shared(system_state);
         std::unit_test::destroy(storage);
@@ -1225,7 +1176,7 @@ module liquid_staking::storage_tests {
         scenario.next_tx(@0x0);
 
         let mut storage = new(scenario.ctx());
-        assert!(storage.total_sui_supply() == 0, 0);
+        assert!(storage.total_sui_supply() == 0);
 
         let mut system_state = scenario.take_shared<SuiSystemState>();
 
@@ -1234,9 +1185,9 @@ module liquid_staking::storage_tests {
         storage.join_stake(&mut system_state, active_staked_sui_1, scenario.ctx());
         storage.join_stake(&mut system_state, active_staked_sui_2, scenario.ctx());
 
-        assert!(storage.total_sui_supply() == 600 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 300 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[1].total_sui_amount() == 200 * MIST_PER_SUI, 0);
+        assert!(storage.total_sui_supply() == 600 * MIST_PER_SUI);
+        assert!(storage.validators()[0].total_sui_amount() == 300 * MIST_PER_SUI);
+        assert!(storage.validators()[1].total_sui_amount() == 200 * MIST_PER_SUI);
 
         // start of test
         let sui = storage.split_n_sui(
@@ -1245,12 +1196,12 @@ module liquid_staking::storage_tests {
             scenario.ctx(),
         );
 
-        assert!(sui.value() == 200 * MIST_PER_SUI, 0);
-        assert!(storage.total_sui_supply() == 400 * MIST_PER_SUI, 0);
-        assert!(storage.sui_pool().value() == 0, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 200 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].inactive_stake().is_none(), 0);
-        assert!(storage.validators()[1].total_sui_amount() == 200 * MIST_PER_SUI, 0);
+        assert!(sui.value() == 200 * MIST_PER_SUI);
+        assert!(storage.total_sui_supply() == 400 * MIST_PER_SUI);
+        assert!(storage.sui_pool().value() == 0);
+        assert!(storage.validators()[0].total_sui_amount() == 200 * MIST_PER_SUI);
+        assert!(storage.validators()[0].inactive_stake().is_none());
+        assert!(storage.validators()[1].total_sui_amount() == 200 * MIST_PER_SUI);
 
         test_scenario::return_shared(system_state);
         std::unit_test::destroy(storage);
@@ -1276,7 +1227,7 @@ module liquid_staking::storage_tests {
         scenario.next_tx(@0x0);
 
         let mut storage = new(scenario.ctx());
-        assert!(storage.total_sui_supply() == 0, 0);
+        assert!(storage.total_sui_supply() == 0);
 
         let mut system_state = scenario.take_shared<SuiSystemState>();
 
@@ -1285,9 +1236,9 @@ module liquid_staking::storage_tests {
         storage.join_stake(&mut system_state, active_staked_sui_1, scenario.ctx());
         storage.join_stake(&mut system_state, active_staked_sui_2, scenario.ctx());
 
-        assert!(storage.total_sui_supply() == 600 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 300 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[1].total_sui_amount() == 200 * MIST_PER_SUI, 0);
+        assert!(storage.total_sui_supply() == 600 * MIST_PER_SUI);
+        assert!(storage.validators()[0].total_sui_amount() == 300 * MIST_PER_SUI);
+        assert!(storage.validators()[1].total_sui_amount() == 200 * MIST_PER_SUI);
 
         // start of test
         let sui = storage.split_n_sui(
@@ -1296,14 +1247,14 @@ module liquid_staking::storage_tests {
             scenario.ctx(),
         );
 
-        assert!(sui.value() == 600 * MIST_PER_SUI, 0);
-        assert!(storage.total_sui_supply() == 0, 0);
-        assert!(storage.sui_pool().value() == 0, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 0, 0);
-        assert!(storage.validators()[0].inactive_stake().is_none(), 0);
-        assert!(storage.validators()[0].active_stake().is_none(), 0);
-        assert!(storage.validators()[1].inactive_stake().is_none(), 0);
-        assert!(storage.validators()[1].active_stake().is_none(), 0);
+        assert!(sui.value() == 600 * MIST_PER_SUI);
+        assert!(storage.total_sui_supply() == 0);
+        assert!(storage.sui_pool().value() == 0);
+        assert!(storage.validators()[0].total_sui_amount() == 0);
+        assert!(storage.validators()[0].inactive_stake().is_none());
+        assert!(storage.validators()[0].active_stake().is_none());
+        assert!(storage.validators()[1].inactive_stake().is_none());
+        assert!(storage.validators()[1].active_stake().is_none());
 
         test_scenario::return_shared(system_state);
         std::unit_test::destroy(storage);
@@ -1329,7 +1280,7 @@ module liquid_staking::storage_tests {
         scenario.next_tx(@0x0);
 
         let mut storage = new(scenario.ctx());
-        assert!(storage.total_sui_supply() == 0, 0);
+        assert!(storage.total_sui_supply() == 0);
 
         let mut system_state = scenario.take_shared<SuiSystemState>();
 
@@ -1338,9 +1289,9 @@ module liquid_staking::storage_tests {
         storage.join_stake(&mut system_state, active_staked_sui_1, scenario.ctx());
         storage.join_stake(&mut system_state, active_staked_sui_2, scenario.ctx());
 
-        assert!(storage.total_sui_supply() == 600 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 300 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[1].total_sui_amount() == 200 * MIST_PER_SUI, 0);
+        assert!(storage.total_sui_supply() == 600 * MIST_PER_SUI);
+        assert!(storage.validators()[0].total_sui_amount() == 300 * MIST_PER_SUI);
+        assert!(storage.validators()[1].total_sui_amount() == 200 * MIST_PER_SUI);
 
         // start of test
         let sui = storage.split_n_sui(
@@ -1349,8 +1300,8 @@ module liquid_staking::storage_tests {
             scenario.ctx(),
         );
 
-        assert!(sui.value() == 0, 0);
-        assert!(storage.total_sui_supply() == 600 * MIST_PER_SUI, 0);
+        assert!(sui.value() == 0);
+        assert!(storage.total_sui_supply() == 600 * MIST_PER_SUI);
 
         test_scenario::return_shared(system_state);
         std::unit_test::destroy(storage);
@@ -1424,15 +1375,15 @@ module liquid_staking::storage_tests {
         scenario.next_tx(@0x0);
 
         let mut storage = new(scenario.ctx());
-        assert!(storage.total_sui_supply() == 0, 0);
+        assert!(storage.total_sui_supply() == 0);
 
         let mut system_state = scenario.take_shared<SuiSystemState>();
 
         storage.join_stake(&mut system_state, staked_sui, scenario.ctx());
         storage.join_stake(&mut system_state, active_staked_sui, scenario.ctx());
 
-        assert!(storage.total_sui_supply() == 300 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 300 * MIST_PER_SUI, 0);
+        assert!(storage.total_sui_supply() == 300 * MIST_PER_SUI);
+        assert!(storage.validators()[0].total_sui_amount() == 300 * MIST_PER_SUI);
 
         let amount = storage.unstake_approx_n_sui_from_validator(
             &mut system_state,
@@ -1441,12 +1392,12 @@ module liquid_staking::storage_tests {
             scenario.ctx(),
         );
 
-        assert!(amount == 100 * MIST_PER_SUI, 0);
-        assert!(storage.total_sui_supply() == 300 * MIST_PER_SUI, 0);
-        assert!(storage.sui_pool().value() == 100 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 200 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].inactive_stake().is_none(), 0);
-        assert!(storage.validators()[0].active_stake().borrow().value() == 100 * MIST_PER_SUI, 0);
+        assert!(amount == 100 * MIST_PER_SUI);
+        assert!(storage.total_sui_supply() == 300 * MIST_PER_SUI);
+        assert!(storage.sui_pool().value() == 100 * MIST_PER_SUI);
+        assert!(storage.validators()[0].total_sui_amount() == 200 * MIST_PER_SUI);
+        assert!(storage.validators()[0].inactive_stake().is_none());
+        assert!(storage.validators()[0].active_stake().borrow().value() == 100 * MIST_PER_SUI);
 
         test_scenario::return_shared(system_state);
         std::unit_test::destroy(storage);
@@ -1470,15 +1421,15 @@ module liquid_staking::storage_tests {
         scenario.next_tx(@0x0);
 
         let mut storage = new(scenario.ctx());
-        assert!(storage.total_sui_supply() == 0, 0);
+        assert!(storage.total_sui_supply() == 0);
 
         let mut system_state = scenario.take_shared<SuiSystemState>();
 
         storage.join_stake(&mut system_state, staked_sui, scenario.ctx());
         storage.join_stake(&mut system_state, active_staked_sui, scenario.ctx());
 
-        assert!(storage.total_sui_supply() == 300 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 300 * MIST_PER_SUI, 0);
+        assert!(storage.total_sui_supply() == 300 * MIST_PER_SUI);
+        assert!(storage.validators()[0].total_sui_amount() == 300 * MIST_PER_SUI);
 
         let amount = storage.unstake_approx_n_sui_from_validator(
             &mut system_state,
@@ -1487,12 +1438,12 @@ module liquid_staking::storage_tests {
             scenario.ctx(),
         );
 
-        assert!(amount == 300 * MIST_PER_SUI, 0);
-        assert!(storage.total_sui_supply() == 300 * MIST_PER_SUI, 0);
-        assert!(storage.sui_pool().value() == 300 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 0, 0);
-        assert!(storage.validators()[0].inactive_stake().is_none(), 0);
-        assert!(storage.validators()[0].active_stake().is_none(), 0);
+        assert!(amount == 300 * MIST_PER_SUI);
+        assert!(storage.total_sui_supply() == 300 * MIST_PER_SUI);
+        assert!(storage.sui_pool().value() == 300 * MIST_PER_SUI);
+        assert!(storage.validators()[0].total_sui_amount() == 0);
+        assert!(storage.validators()[0].inactive_stake().is_none());
+        assert!(storage.validators()[0].active_stake().is_none());
 
         test_scenario::return_shared(system_state);
         std::unit_test::destroy(storage);
@@ -1516,15 +1467,15 @@ module liquid_staking::storage_tests {
         scenario.next_tx(@0x0);
 
         let mut storage = new(scenario.ctx());
-        assert!(storage.total_sui_supply() == 0, 0);
+        assert!(storage.total_sui_supply() == 0);
 
         let mut system_state = scenario.take_shared<SuiSystemState>();
 
         storage.join_stake(&mut system_state, staked_sui, scenario.ctx());
         storage.join_stake(&mut system_state, active_staked_sui, scenario.ctx());
 
-        assert!(storage.total_sui_supply() == 300 * MIST_PER_SUI, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 300 * MIST_PER_SUI, 0);
+        assert!(storage.total_sui_supply() == 300 * MIST_PER_SUI);
+        assert!(storage.validators()[0].total_sui_amount() == 300 * MIST_PER_SUI);
 
         let amount = storage.unstake_approx_n_sui_from_validator(
             &mut system_state,
@@ -1533,15 +1484,14 @@ module liquid_staking::storage_tests {
             scenario.ctx(),
         );
 
-        assert!(amount == 0, 0);
-        assert!(storage.total_sui_supply() == 300 * MIST_PER_SUI, 0);
-        assert!(storage.sui_pool().value() == 0, 0);
-        assert!(storage.validators()[0].total_sui_amount() == 300 * MIST_PER_SUI, 0);
+        assert!(amount == 0);
+        assert!(storage.total_sui_supply() == 300 * MIST_PER_SUI);
+        assert!(storage.sui_pool().value() == 0);
+        assert!(storage.validators()[0].total_sui_amount() == 300 * MIST_PER_SUI);
         assert!(
             storage.validators()[0].inactive_stake().borrow().staked_sui_amount() == 100 * MIST_PER_SUI,
-            0,
         );
-        assert!(storage.validators()[0].active_stake().borrow().value() == 100 * MIST_PER_SUI, 0);
+        assert!(storage.validators()[0].active_stake().borrow().value() == 100 * MIST_PER_SUI);
 
         test_scenario::return_shared(system_state);
         std::unit_test::destroy(storage);

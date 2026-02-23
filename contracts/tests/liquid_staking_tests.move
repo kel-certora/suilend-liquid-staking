@@ -67,8 +67,8 @@ module liquid_staking::liquid_staking_tests {
             scenario.ctx(),
         );
 
-        assert!(lst_info.total_lst_supply() == 0, 0);
-        assert!(lst_info.storage().total_sui_supply() == 0, 0);
+        assert!(lst_info.total_lst_supply() == 0);
+        assert!(lst_info.storage().total_sui_supply() == 0);
 
         test_scenario::return_shared(system_state);
 
@@ -110,8 +110,8 @@ module liquid_staking::liquid_staking_tests {
             scenario.ctx(),
         );
 
-        assert!(lst_info.total_lst_supply() == 200 * MIST_PER_SUI, 0);
-        assert!(lst_info.storage().total_sui_supply() == 200 * MIST_PER_SUI, 0);
+        assert!(lst_info.total_lst_supply() == 200 * MIST_PER_SUI);
+        assert!(lst_info.storage().total_sui_supply() == 200 * MIST_PER_SUI);
 
         test_scenario::return_shared(system_state);
 
@@ -312,19 +312,19 @@ module liquid_staking::liquid_staking_tests {
 
         let lst = lst_info.mint(&mut system_state, sui, scenario.ctx());
 
-        assert!(lst.value() == 99 * MIST_PER_SUI, 0);
-        assert!(lst_info.total_lst_supply() == 99 * MIST_PER_SUI, 0);
-        assert!(lst_info.total_sui_supply() == 99 * MIST_PER_SUI, 0);
-        assert!(lst_info.fees() == 1 * MIST_PER_SUI, 0);
+        assert!(lst.value() == 99 * MIST_PER_SUI);
+        assert!(lst_info.total_lst_supply() == 99 * MIST_PER_SUI);
+        assert!(lst_info.total_sui_supply() == 99 * MIST_PER_SUI);
+        assert!(lst_info.fees() == MIST_PER_SUI);
         std::unit_test::destroy(lst);
 
         let sui = coin::mint_for_testing<SUI>(100 * MIST_PER_SUI, scenario.ctx());
         let mut lst = lst_info.mint(&mut system_state, sui, scenario.ctx());
 
-        assert!(lst.value() == 99 * MIST_PER_SUI, 0);
-        assert!(lst_info.total_lst_supply() == 198 * MIST_PER_SUI, 0);
-        assert!(lst_info.total_sui_supply() == 198 * MIST_PER_SUI, 0);
-        assert!(lst_info.fees() == 2 * MIST_PER_SUI, 0);
+        assert!(lst.value() == 99 * MIST_PER_SUI);
+        assert!(lst_info.total_lst_supply() == 198 * MIST_PER_SUI);
+        assert!(lst_info.total_sui_supply() == 198 * MIST_PER_SUI);
+        assert!(lst_info.fees() == 2 * MIST_PER_SUI);
 
         let sui = lst_info.redeem(
             lst.split(10 * MIST_PER_SUI, scenario.ctx()),
@@ -332,10 +332,10 @@ module liquid_staking::liquid_staking_tests {
             scenario.ctx(),
         );
 
-        assert!(sui.value() ==  9_900_000_000, 0);
-        assert!(lst_info.total_lst_supply() == 188 * MIST_PER_SUI, 0);
-        assert!(lst_info.total_sui_supply() == 188 * MIST_PER_SUI, 0);
-        assert!(lst_info.fees() == 2 * MIST_PER_SUI + 100_000_000, 0);
+        assert!(sui.value() ==  9_900_000_000);
+        assert!(lst_info.total_lst_supply() == 188 * MIST_PER_SUI);
+        assert!(lst_info.total_sui_supply() == 188 * MIST_PER_SUI);
+        assert!(lst_info.fees() == 2 * MIST_PER_SUI + 100_000_000);
 
         std::unit_test::destroy(sui);
         std::unit_test::destroy(lst);
@@ -370,10 +370,10 @@ module liquid_staking::liquid_staking_tests {
 
         let lst = lst_info.mint(&mut system_state, sui, scenario.ctx());
 
-        assert!(lst.value() == 99 * MIST_PER_SUI, 0);
-        assert!(lst_info.total_lst_supply() == 99 * MIST_PER_SUI, 0);
-        assert!(lst_info.total_sui_supply() == 99 * MIST_PER_SUI, 0);
-        assert!(lst_info.fees() == 1 * MIST_PER_SUI, 0);
+        assert!(lst.value() == 99 * MIST_PER_SUI);
+        assert!(lst_info.total_lst_supply() == 99 * MIST_PER_SUI);
+        assert!(lst_info.total_sui_supply() == 99 * MIST_PER_SUI);
+        assert!(lst_info.fees() == MIST_PER_SUI);
 
         lst_info.increase_validator_stake(
             &admin_cap,
@@ -383,11 +383,10 @@ module liquid_staking::liquid_staking_tests {
             scenario.ctx(),
         );
 
-        assert!(lst_info.total_lst_supply() == 99 * MIST_PER_SUI, 0);
-        assert!(lst_info.total_sui_supply() == 99 * MIST_PER_SUI, 0);
+        assert!(lst_info.total_lst_supply() == 99 * MIST_PER_SUI);
+        assert!(lst_info.total_sui_supply() == 99 * MIST_PER_SUI);
         assert!(
             lst_info.storage().validators()[0].inactive_stake().borrow().staked_sui_amount() == 20 * MIST_PER_SUI,
-            0,
         );
 
         lst_info.increase_validator_stake(
@@ -398,11 +397,10 @@ module liquid_staking::liquid_staking_tests {
             scenario.ctx(),
         );
 
-        assert!(lst_info.total_lst_supply() == 99 * MIST_PER_SUI, 0);
-        assert!(lst_info.total_sui_supply() == 99 * MIST_PER_SUI, 0);
+        assert!(lst_info.total_lst_supply() == 99 * MIST_PER_SUI);
+        assert!(lst_info.total_sui_supply() == 99 * MIST_PER_SUI);
         assert!(
             lst_info.storage().validators()[1].inactive_stake().borrow().staked_sui_amount() == 20 * MIST_PER_SUI,
-            0,
         );
 
         test_scenario::return_shared(system_state);
@@ -421,15 +419,13 @@ module liquid_staking::liquid_staking_tests {
             scenario.ctx(),
         );
 
-        assert!(lst_info.total_lst_supply() == 99 * MIST_PER_SUI, 0);
-        assert!(lst_info.total_sui_supply() == 99 * MIST_PER_SUI, 0);
+        assert!(lst_info.total_lst_supply() == 99 * MIST_PER_SUI);
+        assert!(lst_info.total_sui_supply() == 99 * MIST_PER_SUI);
         assert!(
             lst_info.storage().validators()[1].inactive_stake().borrow().staked_sui_amount() == 20 * MIST_PER_SUI,
-            0,
         );
         assert!(
             lst_info.storage().validators()[1].active_stake().borrow().value() == 10 * MIST_PER_SUI,
-            0,
         );
 
         lst_info.decrease_validator_stake(
@@ -440,10 +436,10 @@ module liquid_staking::liquid_staking_tests {
             scenario.ctx(),
         );
 
-        assert!(lst_info.total_lst_supply() == 99 * MIST_PER_SUI, 0);
-        assert!(lst_info.total_sui_supply() == 99 * MIST_PER_SUI, 0);
-        assert!(lst_info.storage().validators()[1].inactive_stake().is_none(), 0);
-        assert!(lst_info.storage().validators()[1].active_stake().is_none(), 0);
+        assert!(lst_info.total_lst_supply() == 99 * MIST_PER_SUI);
+        assert!(lst_info.total_sui_supply() == 99 * MIST_PER_SUI);
+        assert!(lst_info.storage().validators()[1].inactive_stake().is_none());
+        assert!(lst_info.storage().validators()[1].active_stake().is_none());
 
         std::unit_test::destroy(lst);
         test_scenario::return_shared(system_state);
@@ -476,7 +472,7 @@ module liquid_staking::liquid_staking_tests {
         let sui = coin::mint_for_testing<SUI>(100 * MIST_PER_SUI, scenario.ctx());
         let lst = lst_info.mint(&mut system_state, sui, scenario.ctx());
 
-        assert!(lst.value() == 90 * MIST_PER_SUI, 0);
+        assert!(lst.value() == 90 * MIST_PER_SUI);
 
         lst_info.increase_validator_stake(
             &admin_cap,
@@ -508,15 +504,15 @@ module liquid_staking::liquid_staking_tests {
             scenario.ctx(),
         );
 
-        assert!(sui.value() == 135 * MIST_PER_SUI, 0);
-        assert!(lst_info.storage().total_sui_supply() == 45 * MIST_PER_SUI, 0);
-        assert!(lst_info.total_sui_supply() == 0, 0);
-        assert!(lst_info.accrued_spread_fees() == 45 * MIST_PER_SUI, 0);
+        assert!(sui.value() == 135 * MIST_PER_SUI);
+        assert!(lst_info.storage().total_sui_supply() == 45 * MIST_PER_SUI);
+        assert!(lst_info.total_sui_supply() == 0);
+        assert!(lst_info.accrued_spread_fees() == 45 * MIST_PER_SUI);
 
         let fees = lst_info.collect_fees(&mut system_state, &admin_cap, scenario.ctx());
-        assert!(fees.value() == 55 * MIST_PER_SUI, 0); // 45 in spread, 10 in mint
-        assert!(lst_info.accrued_spread_fees() == 0, 0);
-        assert!(lst_info.storage().total_sui_supply() == 0, 0);
+        assert!(fees.value() == 55 * MIST_PER_SUI); // 45 in spread, 10 in mint
+        assert!(lst_info.accrued_spread_fees() == 0);
+        assert!(lst_info.storage().total_sui_supply() == 0);
 
         std::unit_test::destroy(sui);
         std::unit_test::destroy(fees);
@@ -555,8 +551,8 @@ module liquid_staking::liquid_staking_tests {
                 .to_fee_config(),
         );
 
-        assert!(lst_info.fee_config().spread_fee_bps() == 1000, 0);
-        assert!(lst_info.fee_config().sui_mint_fee_bps() == 100, 0);
+        assert!(lst_info.fee_config().spread_fee_bps() == 1000);
+        assert!(lst_info.fee_config().sui_mint_fee_bps() == 100);
 
         test_scenario::return_shared(system_state);
 
@@ -597,7 +593,7 @@ module liquid_staking::liquid_staking_tests {
             scenario.ctx(),
         );
 
-        assert!(increased_amount == 0, 0);
+        assert!(increased_amount == 0);
 
         std::unit_test::destroy(lst);
 
@@ -713,7 +709,7 @@ module liquid_staking::liquid_staking_tests {
             scenario.ctx(),
         );
 
-        assert!(increased_amount == std::u64::min(total_sui_supply, stake_amount), 0);
+        assert!(increased_amount == std::u64::min(total_sui_supply, stake_amount));
 
         std::unit_test::destroy(lst);
 
@@ -765,10 +761,7 @@ module liquid_staking::liquid_staking_tests {
             scenario.ctx(),
         );
 
-        assert!(
-            unstaked_amount <= std::u64::min(total_sui_supply, unstake_amount + MIST_PER_SUI),
-            0,
-        );
+        assert!(unstaked_amount <= std::u64::min(total_sui_supply, unstake_amount + MIST_PER_SUI));
 
         std::unit_test::destroy(lst);
 
@@ -798,8 +791,8 @@ module liquid_staking::liquid_staking_tests {
         let sui = coin::mint_for_testing(100 * MIST_PER_SUI, scenario.ctx());
         let mut lst = lst_info.mint(&mut system_state, sui, scenario.ctx());
 
-        assert!(lst_info.total_lst_supply() == 100 * MIST_PER_SUI, 0);
-        assert!(lst_info.storage().total_sui_supply() == 100 * MIST_PER_SUI, 0);
+        assert!(lst_info.total_lst_supply() == 100 * MIST_PER_SUI);
+        assert!(lst_info.storage().total_sui_supply() == 100 * MIST_PER_SUI);
 
         let lst_to_unstake = lst.split(10 * MIST_PER_SUI, scenario.ctx());
         let custom_redeem_request = lst_info.custom_redeem_request(
@@ -844,8 +837,8 @@ module liquid_staking::liquid_staking_tests {
             scenario.ctx(),
         );
 
-        assert!(lst_info.total_lst_supply() == 0, 0);
-        assert!(lst_info.storage().total_sui_supply() == 0, 0);
+        assert!(lst_info.total_lst_supply() == 0);
+        assert!(lst_info.storage().total_sui_supply() == 0);
 
         let sui = coin::mint_for_testing<SUI>(200 * MIST_PER_SUI, scenario.ctx());
         let lst = lst_info.mint(&mut system_state, sui, scenario.ctx());
