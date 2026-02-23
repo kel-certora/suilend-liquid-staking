@@ -1,7 +1,7 @@
 #[test_only]
 module liquid_staking::registry_tests {
     use liquid_staking::{fees, liquid_staking, registry, weight};
-    use sui::{coin, test_scenario::{Self, Scenario}};
+    use sui::{coin, test_scenario};
 
     public struct TEST has drop {}
 
@@ -28,10 +28,10 @@ module liquid_staking::registry_tests {
         assert!(entry.liquid_staking_info_id() == lst_info_id);
         assert!(entry.extra_info().weight_hook_id() == object::id(&weight_hook));
 
-        sui::test_utils::destroy(lst_info);
-        sui::test_utils::destroy(weight_hook);
-        sui::test_utils::destroy(weight_hook_admin_cap);
-        sui::test_utils::destroy(registry);
+        std::unit_test::destroy(lst_info);
+        std::unit_test::destroy(weight_hook);
+        std::unit_test::destroy(weight_hook_admin_cap);
+        std::unit_test::destroy(registry);
 
         scenario.end();
     }

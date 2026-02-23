@@ -170,7 +170,7 @@ module liquid_staking::fees {
     }
 
     #[test_only]
-    use sui::test_scenario::{Self, Scenario};
+    use sui::test_scenario;
 
     #[test]
     public fun test_validate_fees_happy() {
@@ -187,7 +187,7 @@ module liquid_staking::fees {
 
         validate_fees(&fees);
 
-        sui::test_utils::destroy(fees);
+        std::unit_test::destroy(fees);
         scenario.end();
     }
 
@@ -207,7 +207,7 @@ module liquid_staking::fees {
 
         validate_fees(&fees);
 
-        sui::test_utils::destroy(fees);
+        std::unit_test::destroy(fees);
         scenario.end();
     }
 
@@ -229,7 +229,7 @@ module liquid_staking::fees {
         assert!(calculate_mint_fee(&fees, 100) == 1, 0);
         assert!(calculate_mint_fee(&fees, 101) == 2, 0);
 
-        sui::test_utils::destroy(fees);
+        std::unit_test::destroy(fees);
         scenario.end();
     }
 
@@ -251,7 +251,7 @@ module liquid_staking::fees {
         assert!(calculate_redeem_fee(&fees, 100) == 1, 0);
         assert!(calculate_redeem_fee(&fees, 101) == 2, 0);
 
-        sui::test_utils::destroy(fees);
+        std::unit_test::destroy(fees);
         scenario.end();
     }
 }

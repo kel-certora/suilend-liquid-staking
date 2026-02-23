@@ -72,8 +72,8 @@ module liquid_staking::liquid_staking_tests {
 
         test_scenario::return_shared(system_state);
 
-        sui::test_utils::destroy(admin_cap);
-        sui::test_utils::destroy(lst_info);
+        std::unit_test::destroy(admin_cap);
+        std::unit_test::destroy(lst_info);
 
         scenario.end();
     }
@@ -115,9 +115,9 @@ module liquid_staking::liquid_staking_tests {
 
         test_scenario::return_shared(system_state);
 
-        sui::test_utils::destroy(admin_cap);
-        sui::test_utils::destroy(lst_info);
-        sui::test_utils::destroy(coins);
+        std::unit_test::destroy(admin_cap);
+        std::unit_test::destroy(lst_info);
+        std::unit_test::destroy(coins);
 
         scenario.end();
     }
@@ -145,9 +145,9 @@ module liquid_staking::liquid_staking_tests {
 
         test_scenario::return_shared(system_state);
 
-        sui::test_utils::destroy(coins);
-        sui::test_utils::destroy(admin_cap);
-        sui::test_utils::destroy(lst_info);
+        std::unit_test::destroy(coins);
+        std::unit_test::destroy(admin_cap);
+        std::unit_test::destroy(lst_info);
 
         scenario.end();
     }
@@ -185,8 +185,8 @@ module liquid_staking::liquid_staking_tests {
 
         test_scenario::return_shared(system_state);
 
-        sui::test_utils::destroy(admin_cap);
-        sui::test_utils::destroy(lst_info);
+        std::unit_test::destroy(admin_cap);
+        std::unit_test::destroy(lst_info);
 
         scenario.end();
     }
@@ -217,9 +217,9 @@ module liquid_staking::liquid_staking_tests {
 
         test_scenario::return_shared(system_state);
 
-        sui::test_utils::destroy(admin_cap);
-        sui::test_utils::destroy(lst_info);
-        sui::test_utils::destroy(coins);
+        std::unit_test::destroy(admin_cap);
+        std::unit_test::destroy(lst_info);
+        std::unit_test::destroy(coins);
 
         scenario.end();
     }
@@ -250,9 +250,9 @@ module liquid_staking::liquid_staking_tests {
 
         test_scenario::return_shared(system_state);
 
-        sui::test_utils::destroy(admin_cap);
-        sui::test_utils::destroy(lst_info);
-        sui::test_utils::destroy(coins);
+        std::unit_test::destroy(admin_cap);
+        std::unit_test::destroy(lst_info);
+        std::unit_test::destroy(coins);
 
         scenario.end();
     }
@@ -283,9 +283,9 @@ module liquid_staking::liquid_staking_tests {
 
         test_scenario::return_shared(system_state);
 
-        sui::test_utils::destroy(admin_cap);
-        sui::test_utils::destroy(lst_info);
-        sui::test_utils::destroy(coins);
+        std::unit_test::destroy(admin_cap);
+        std::unit_test::destroy(lst_info);
+        std::unit_test::destroy(coins);
 
         scenario.end();
     }
@@ -316,7 +316,7 @@ module liquid_staking::liquid_staking_tests {
         assert!(lst_info.total_lst_supply() == 99 * MIST_PER_SUI, 0);
         assert!(lst_info.total_sui_supply() == 99 * MIST_PER_SUI, 0);
         assert!(lst_info.fees() == 1 * MIST_PER_SUI, 0);
-        sui::test_utils::destroy(lst);
+        std::unit_test::destroy(lst);
 
         let sui = coin::mint_for_testing<SUI>(100 * MIST_PER_SUI, scenario.ctx());
         let mut lst = lst_info.mint(&mut system_state, sui, scenario.ctx());
@@ -337,13 +337,13 @@ module liquid_staking::liquid_staking_tests {
         assert!(lst_info.total_sui_supply() == 188 * MIST_PER_SUI, 0);
         assert!(lst_info.fees() == 2 * MIST_PER_SUI + 100_000_000, 0);
 
-        sui::test_utils::destroy(sui);
-        sui::test_utils::destroy(lst);
+        std::unit_test::destroy(sui);
+        std::unit_test::destroy(lst);
 
         test_scenario::return_shared(system_state);
 
-        sui::test_utils::destroy(admin_cap);
-        sui::test_utils::destroy(lst_info);
+        std::unit_test::destroy(admin_cap);
+        std::unit_test::destroy(lst_info);
 
         scenario.end();
     }
@@ -445,11 +445,11 @@ module liquid_staking::liquid_staking_tests {
         assert!(lst_info.storage().validators()[1].inactive_stake().is_none(), 0);
         assert!(lst_info.storage().validators()[1].active_stake().is_none(), 0);
 
-        sui::test_utils::destroy(lst);
+        std::unit_test::destroy(lst);
         test_scenario::return_shared(system_state);
 
-        sui::test_utils::destroy(admin_cap);
-        sui::test_utils::destroy(lst_info);
+        std::unit_test::destroy(admin_cap);
+        std::unit_test::destroy(lst_info);
 
         scenario.end();
     }
@@ -518,12 +518,12 @@ module liquid_staking::liquid_staking_tests {
         assert!(lst_info.accrued_spread_fees() == 0, 0);
         assert!(lst_info.storage().total_sui_supply() == 0, 0);
 
-        sui::test_utils::destroy(sui);
-        sui::test_utils::destroy(fees);
+        std::unit_test::destroy(sui);
+        std::unit_test::destroy(fees);
         test_scenario::return_shared(system_state);
 
-        sui::test_utils::destroy(admin_cap);
-        sui::test_utils::destroy(lst_info);
+        std::unit_test::destroy(admin_cap);
+        std::unit_test::destroy(lst_info);
 
         scenario.end();
     }
@@ -560,8 +560,8 @@ module liquid_staking::liquid_staking_tests {
 
         test_scenario::return_shared(system_state);
 
-        sui::test_utils::destroy(admin_cap);
-        sui::test_utils::destroy(lst_info);
+        std::unit_test::destroy(admin_cap);
+        std::unit_test::destroy(lst_info);
 
         scenario.end();
     }
@@ -599,12 +599,12 @@ module liquid_staking::liquid_staking_tests {
 
         assert!(increased_amount == 0, 0);
 
-        sui::test_utils::destroy(lst);
+        std::unit_test::destroy(lst);
 
         test_scenario::return_shared(system_state);
 
-        sui::test_utils::destroy(admin_cap);
-        sui::test_utils::destroy(lst_info);
+        std::unit_test::destroy(admin_cap);
+        std::unit_test::destroy(lst_info);
 
         scenario.end();
     }
@@ -672,12 +672,12 @@ module liquid_staking::liquid_staking_tests {
         assert!(lst_info.storage().validators()[0].staking_pool_id() == pool_id_2);
         assert!(lst_info.storage().validators()[1].staking_pool_id() == pool_id_1);
 
-        sui::test_utils::destroy(lst);
+        std::unit_test::destroy(lst);
 
         test_scenario::return_shared(system_state);
 
-        sui::test_utils::destroy(admin_cap);
-        sui::test_utils::destroy(lst_info);
+        std::unit_test::destroy(admin_cap);
+        std::unit_test::destroy(lst_info);
 
         scenario.end();
     }
@@ -715,12 +715,12 @@ module liquid_staking::liquid_staking_tests {
 
         assert!(increased_amount == std::u64::min(total_sui_supply, stake_amount), 0);
 
-        sui::test_utils::destroy(lst);
+        std::unit_test::destroy(lst);
 
         test_scenario::return_shared(system_state);
 
-        sui::test_utils::destroy(admin_cap);
-        sui::test_utils::destroy(lst_info);
+        std::unit_test::destroy(admin_cap);
+        std::unit_test::destroy(lst_info);
 
         scenario.end();
     }
@@ -770,12 +770,12 @@ module liquid_staking::liquid_staking_tests {
             0,
         );
 
-        sui::test_utils::destroy(lst);
+        std::unit_test::destroy(lst);
 
         test_scenario::return_shared(system_state);
 
-        sui::test_utils::destroy(admin_cap);
-        sui::test_utils::destroy(lst_info);
+        std::unit_test::destroy(admin_cap);
+        std::unit_test::destroy(lst_info);
 
         scenario.end();
     }
@@ -812,10 +812,10 @@ module liquid_staking::liquid_staking_tests {
 
         test_scenario::return_shared(system_state);
 
-        sui::test_utils::destroy(lst_info);
-        sui::test_utils::destroy(lst);
-        sui::test_utils::destroy(sui);
-        sui::test_utils::destroy(admin_cap);
+        std::unit_test::destroy(lst_info);
+        std::unit_test::destroy(lst);
+        std::unit_test::destroy(sui);
+        std::unit_test::destroy(admin_cap);
 
         scenario.end();
     }

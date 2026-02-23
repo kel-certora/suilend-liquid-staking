@@ -119,7 +119,7 @@ module liquid_staking::storage_tests {
         assert!(!storage.refresh(&mut system_state, scenario.ctx()), 0);
         test_scenario::return_shared(system_state);
 
-        sui::test_utils::destroy(storage);
+        std::unit_test::destroy(storage);
         scenario.end();
     }
 
@@ -173,7 +173,7 @@ module liquid_staking::storage_tests {
         assert!(storage.validators().length() == 0, 0); // Validator should be removed as it's empty
 
         test_scenario::return_shared(system_state);
-        sui::test_utils::destroy(storage);
+        std::unit_test::destroy(storage);
         scenario.end();
     }
 
@@ -222,7 +222,7 @@ module liquid_staking::storage_tests {
         );
 
         test_scenario::return_shared(system_state);
-        sui::test_utils::destroy(storage);
+        std::unit_test::destroy(storage);
         scenario.end();
     }
 
@@ -277,7 +277,7 @@ module liquid_staking::storage_tests {
         assert!(storage.last_refresh_epoch() == 2, 0);
 
         test_scenario::return_shared(system_state);
-        sui::test_utils::destroy(storage);
+        std::unit_test::destroy(storage);
         scenario.end();
     }
 
@@ -299,7 +299,7 @@ module liquid_staking::storage_tests {
         assert!(storage.total_sui_supply() == 50 * MIST_PER_SUI, 0);
         assert!(storage.sui_pool().value() == 50 * MIST_PER_SUI, 0);
 
-        sui::test_utils::destroy(storage);
+        std::unit_test::destroy(storage);
         scenario.end();
     }
 
@@ -350,7 +350,7 @@ module liquid_staking::storage_tests {
         );
 
         test_scenario::return_shared(system_state);
-        sui::test_utils::destroy(storage);
+        std::unit_test::destroy(storage);
 
         scenario.end();
     }
@@ -406,7 +406,7 @@ module liquid_staking::storage_tests {
         );
 
         test_scenario::return_shared(system_state);
-        sui::test_utils::destroy(storage);
+        std::unit_test::destroy(storage);
 
         scenario.end();
     }
@@ -434,7 +434,7 @@ module liquid_staking::storage_tests {
         storage.join_stake(&mut system_state, staked_sui_1, scenario.ctx());
 
         test_scenario::return_shared(system_state);
-        sui::test_utils::destroy(storage);
+        std::unit_test::destroy(storage);
 
         scenario.end();
     }
@@ -468,7 +468,7 @@ module liquid_staking::storage_tests {
         assert!(storage.total_sui_supply() == 100 * MIST_PER_SUI, 0);
 
         test_scenario::return_shared(system_state);
-        sui::test_utils::destroy(storage);
+        std::unit_test::destroy(storage);
 
         scenario.end();
     }
@@ -606,8 +606,8 @@ module liquid_staking::storage_tests {
         storage.refresh(&mut system_state, scenario.ctx());
         test_scenario::return_shared(system_state);
 
-        sui::test_utils::destroy(storage);
-        sui::test_utils::destroy(staked_sui_2);
+        std::unit_test::destroy(storage);
+        std::unit_test::destroy(staked_sui_2);
 
         scenario.end();
     }
@@ -639,7 +639,7 @@ module liquid_staking::storage_tests {
         storage.join_stake(&mut system_state, active_staked_sui_1, scenario.ctx());
 
         test_scenario::return_shared(system_state);
-        sui::test_utils::destroy(storage);
+        std::unit_test::destroy(storage);
 
         scenario.end();
     }
@@ -696,7 +696,7 @@ module liquid_staking::storage_tests {
         );
 
         test_scenario::return_shared(system_state);
-        sui::test_utils::destroy(storage);
+        std::unit_test::destroy(storage);
 
         scenario.end();
     }
@@ -720,14 +720,14 @@ module liquid_staking::storage_tests {
         let sui = storage.split_up_to_n_sui_from_sui_pool(25 * MIST_PER_SUI);
         assert!(storage.total_sui_supply() == 25 * MIST_PER_SUI, 0);
         assert!(sui.value() == 25 * MIST_PER_SUI, 0);
-        sui::test_utils::destroy(sui);
+        std::unit_test::destroy(sui);
 
         let sui = storage.split_up_to_n_sui_from_sui_pool(50 * MIST_PER_SUI);
         assert!(storage.total_sui_supply() == 0 * MIST_PER_SUI, 0);
         assert!(sui.value() == 25 * MIST_PER_SUI, 0);
-        sui::test_utils::destroy(sui);
+        std::unit_test::destroy(sui);
 
-        sui::test_utils::destroy(storage);
+        std::unit_test::destroy(storage);
 
         scenario.end();
     }
@@ -766,7 +766,7 @@ module liquid_staking::storage_tests {
             0,
         );
 
-        sui::test_utils::destroy(storage);
+        std::unit_test::destroy(storage);
         test_scenario::return_shared(system_state);
         scenario.end();
     }
@@ -800,7 +800,7 @@ module liquid_staking::storage_tests {
         assert!(storage.validators()[0].active_stake().is_none(), 0);
         assert!(storage.validators()[0].inactive_stake().is_none(), 0);
 
-        sui::test_utils::destroy(storage);
+        std::unit_test::destroy(storage);
         test_scenario::return_shared(system_state);
         scenario.end();
     }
@@ -837,7 +837,7 @@ module liquid_staking::storage_tests {
             0,
         );
 
-        sui::test_utils::destroy(storage);
+        std::unit_test::destroy(storage);
         test_scenario::return_shared(system_state);
         scenario.end();
     }
@@ -874,7 +874,7 @@ module liquid_staking::storage_tests {
             0,
         );
 
-        sui::test_utils::destroy(storage);
+        std::unit_test::destroy(storage);
         test_scenario::return_shared(system_state);
         scenario.end();
     }
@@ -908,7 +908,7 @@ module liquid_staking::storage_tests {
         assert!(storage.validators()[0].active_stake().is_none(), 0);
         assert!(storage.validators()[0].inactive_stake().is_none(), 0);
 
-        sui::test_utils::destroy(storage);
+        std::unit_test::destroy(storage);
         test_scenario::return_shared(system_state);
         scenario.end();
     }
@@ -948,7 +948,7 @@ module liquid_staking::storage_tests {
         assert!(storage.validators()[0].active_stake().borrow().value() == 100 * MIST_PER_SUI, 0);
         assert!(storage.validators()[0].inactive_stake().is_none(), 0);
 
-        sui::test_utils::destroy(storage);
+        std::unit_test::destroy(storage);
         test_scenario::return_shared(system_state);
         scenario.end();
     }
@@ -988,7 +988,7 @@ module liquid_staking::storage_tests {
         assert!(storage.validators()[0].active_stake().is_none(), 0);
         assert!(storage.validators()[0].inactive_stake().is_none(), 0);
 
-        sui::test_utils::destroy(storage);
+        std::unit_test::destroy(storage);
         test_scenario::return_shared(system_state);
         scenario.end();
     }
@@ -1028,7 +1028,7 @@ module liquid_staking::storage_tests {
         assert!(storage.validators()[0].active_stake().borrow().value() == 50 * MIST_PER_SUI, 0);
         assert!(storage.validators()[0].inactive_stake().is_none(), 0);
 
-        sui::test_utils::destroy(storage);
+        std::unit_test::destroy(storage);
         test_scenario::return_shared(system_state);
         scenario.end();
     }
@@ -1071,7 +1071,7 @@ module liquid_staking::storage_tests {
         );
         assert!(storage.validators()[0].inactive_stake().is_none(), 0);
 
-        sui::test_utils::destroy(storage);
+        std::unit_test::destroy(storage);
         test_scenario::return_shared(system_state);
         scenario.end();
     }
@@ -1111,7 +1111,7 @@ module liquid_staking::storage_tests {
         assert!(storage.validators()[0].active_stake().borrow().value() == MIST_PER_SUI / 2 - 1, 0);
         assert!(storage.validators()[0].inactive_stake().is_none(), 0);
 
-        sui::test_utils::destroy(storage);
+        std::unit_test::destroy(storage);
         test_scenario::return_shared(system_state);
         scenario.end();
     }
@@ -1151,7 +1151,7 @@ module liquid_staking::storage_tests {
         assert!(storage.validators()[0].active_stake().borrow().value() == 99_000_000_000 - 1, 0);
         assert!(storage.validators()[0].inactive_stake().is_none(), 0);
 
-        sui::test_utils::destroy(storage);
+        std::unit_test::destroy(storage);
         test_scenario::return_shared(system_state);
         scenario.end();
     }
@@ -1202,8 +1202,8 @@ module liquid_staking::storage_tests {
         assert!(storage.validators()[1].total_sui_amount() == 200 * MIST_PER_SUI, 0);
 
         test_scenario::return_shared(system_state);
-        sui::test_utils::destroy(storage);
-        sui::test_utils::destroy(sui);
+        std::unit_test::destroy(storage);
+        std::unit_test::destroy(sui);
 
         scenario.end();
     }
@@ -1253,8 +1253,8 @@ module liquid_staking::storage_tests {
         assert!(storage.validators()[1].total_sui_amount() == 200 * MIST_PER_SUI, 0);
 
         test_scenario::return_shared(system_state);
-        sui::test_utils::destroy(storage);
-        sui::test_utils::destroy(sui);
+        std::unit_test::destroy(storage);
+        std::unit_test::destroy(sui);
 
         scenario.end();
     }
@@ -1306,8 +1306,8 @@ module liquid_staking::storage_tests {
         assert!(storage.validators()[1].active_stake().is_none(), 0);
 
         test_scenario::return_shared(system_state);
-        sui::test_utils::destroy(storage);
-        sui::test_utils::destroy(sui);
+        std::unit_test::destroy(storage);
+        std::unit_test::destroy(sui);
 
         scenario.end();
     }
@@ -1353,8 +1353,8 @@ module liquid_staking::storage_tests {
         assert!(storage.total_sui_supply() == 600 * MIST_PER_SUI, 0);
 
         test_scenario::return_shared(system_state);
-        sui::test_utils::destroy(storage);
-        sui::test_utils::destroy(sui);
+        std::unit_test::destroy(storage);
+        std::unit_test::destroy(sui);
 
         scenario.end();
     }
@@ -1387,7 +1387,7 @@ module liquid_staking::storage_tests {
             0,
             &mut scenario,
         );
-        sui::test_utils::destroy(storage_rebate);
+        std::unit_test::destroy(storage_rebate);
 
         let mut system_state = scenario.take_shared<SuiSystemState>();
         let mut storage = new(scenario.ctx());
@@ -1401,8 +1401,8 @@ module liquid_staking::storage_tests {
         );
 
         test_scenario::return_shared(system_state);
-        sui::test_utils::destroy(storage);
-        sui::test_utils::destroy(sui);
+        std::unit_test::destroy(storage);
+        std::unit_test::destroy(sui);
         scenario.end();
     }
 
@@ -1449,7 +1449,7 @@ module liquid_staking::storage_tests {
         assert!(storage.validators()[0].active_stake().borrow().value() == 100 * MIST_PER_SUI, 0);
 
         test_scenario::return_shared(system_state);
-        sui::test_utils::destroy(storage);
+        std::unit_test::destroy(storage);
 
         scenario.end();
     }
@@ -1495,7 +1495,7 @@ module liquid_staking::storage_tests {
         assert!(storage.validators()[0].active_stake().is_none(), 0);
 
         test_scenario::return_shared(system_state);
-        sui::test_utils::destroy(storage);
+        std::unit_test::destroy(storage);
 
         scenario.end();
     }
@@ -1544,7 +1544,7 @@ module liquid_staking::storage_tests {
         assert!(storage.validators()[0].active_stake().borrow().value() == 100 * MIST_PER_SUI, 0);
 
         test_scenario::return_shared(system_state);
-        sui::test_utils::destroy(storage);
+        std::unit_test::destroy(storage);
 
         scenario.end();
     }
@@ -1574,7 +1574,7 @@ module liquid_staking::storage_tests {
             scenario.next_tx(@0x0);
         });
 
-        sui::test_utils::destroy(storage);
+        std::unit_test::destroy(storage);
         scenario.end();
     }
 
@@ -1629,7 +1629,7 @@ module liquid_staking::storage_tests {
         assert!(final_total == final_sui_pool + final_validator_total);
 
         test_scenario::return_shared(system_state);
-        sui::test_utils::destroy(storage);
+        std::unit_test::destroy(storage);
         scenario.end();
     }
 

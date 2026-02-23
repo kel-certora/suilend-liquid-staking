@@ -139,11 +139,11 @@ module liquid_staking::weight_tests {
 
         test_scenario::return_shared(system_state);
 
-        sui::test_utils::destroy(admin_cap);
-        sui::test_utils::destroy(lst_info);
-        sui::test_utils::destroy(lst);
-        sui::test_utils::destroy(lst2);
-        sui::test_utils::destroy(collected_fees);
+        std::unit_test::destroy(admin_cap);
+        std::unit_test::destroy(lst_info);
+        std::unit_test::destroy(lst);
+        std::unit_test::destroy(lst2);
+        std::unit_test::destroy(collected_fees);
 
         scenario.end();
     }
@@ -219,11 +219,11 @@ module liquid_staking::weight_tests {
 
         test_scenario::return_shared(system_state);
 
-        sui::test_utils::destroy(weight_hook);
-        sui::test_utils::destroy(weight_hook_admin_cap);
-        sui::test_utils::destroy(lst_info);
-        sui::test_utils::destroy(lst);
-        sui::test_utils::destroy(sui);
+        std::unit_test::destroy(weight_hook);
+        std::unit_test::destroy(weight_hook_admin_cap);
+        std::unit_test::destroy(lst_info);
+        std::unit_test::destroy(lst);
+        std::unit_test::destroy(sui);
 
         scenario.end();
     }
