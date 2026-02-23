@@ -60,7 +60,7 @@ module liquid_staking::weight {
         let weight_hook_admin_cap = WeightHookAdminCap { id: object::new(ctx) };
 
         emit_event(CreateEvent {
-            typename: type_name::get<P>(),
+            typename: type_name::with_defining_ids<P>(),
             weight_hook_id: *weight_hook.id.as_inner(),
             weight_hook_admin_cap_id: *weight_hook_admin_cap.id.as_inner(),
         });

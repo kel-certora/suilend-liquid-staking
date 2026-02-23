@@ -51,7 +51,7 @@ module liquid_staking::registry {
         self
             .table
             .add(
-                type_name::get<CoinType>(),
+                type_name::with_defining_ids<CoinType>(),
                 Entry {
                     admin_cap_id: object::id(admin_cap),
                     liquid_staking_info_id: object::id(liquid_staking_info),
@@ -63,6 +63,6 @@ module liquid_staking::registry {
     public(package) fun get_entry<CoinType, ExtraInfoType: store>(
         self: &Registry,
     ): &Entry<ExtraInfoType> {
-        self.table.borrow(type_name::get<CoinType>())
+        self.table.borrow(type_name::with_defining_ids<CoinType>())
     }
 }
