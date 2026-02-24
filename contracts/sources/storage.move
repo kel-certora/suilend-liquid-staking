@@ -550,11 +550,14 @@ module liquid_staking::storage {
         let redeemed_amount = redeemed_sui.value();
 
         // Update accounting based on actual redeemed amount.
-        // The validator's total_sui_amount may drift slightly from get_sui_amount()
-        // but this will be reconciled during the next epoch refresh
+        // Use min() to handle the case where the redeemed amount exceeds the tracked
+        // amount due to a stale exchange rate (e.g. inactive validator cleanup).
+        // Any excess is untracked reward income that enters total_sui_supply via join_to_sui_pool.
+        // The validator's total_sui_amount will be reconciled during the next refresh.
         let validator_info = &mut self.validator_infos[validator_index];
-        self.total_sui_supply = self.total_sui_supply - redeemed_amount;
-        validator_info.total_sui_amount = validator_info.total_sui_amount - redeemed_amount;
+        let tracked_decrease = redeemed_amount.min(validator_info.total_sui_amount);
+        self.total_sui_supply = self.total_sui_supply - tracked_decrease;
+        validator_info.total_sui_amount = validator_info.total_sui_amount - tracked_decrease;
 
         redeemed_sui
     }

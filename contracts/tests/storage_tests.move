@@ -1511,4 +1511,48 @@ module liquid_staking::storage_tests {
         sui::test_utils::destroy(storage);
         scenario.end();
     }
-}   
+
+    #[test]
+    fun test_refresh_inactive_validator_with_rewards() {
+        let mut scenario = test_scenario::begin(@0x0);
+
+        setup_sui_system(&mut scenario, vector[100, 100]);
+
+        let staked_sui = stake_with(1, 100, &mut scenario);
+
+        // Activate the stake
+        advance_epoch_with_reward_amounts(0, 0, &mut scenario);
+
+        let mut system_state = scenario.take_shared<SuiSystemState>();
+        let mut storage = new(scenario.ctx());
+        storage.join_stake(&mut system_state, staked_sui, scenario.ctx());
+        storage.refresh(&mut system_state, scenario.ctx());
+        test_scenario::return_shared(system_state);
+
+        // Earn rewards, then remove validator.
+        // Storage's exchange rate is now stale — it doesn't include these rewards.
+        advance_epoch_with_reward_amounts(0, 400, &mut scenario);
+
+        scenario.next_tx(@0x1);
+        let mut system_state = scenario.take_shared<SuiSystemState>();
+        system_state.request_remove_validator(scenario.ctx());
+        test_scenario::return_shared(system_state);
+
+        advance_epoch_with_reward_amounts(0, 0, &mut scenario);
+
+        // refresh() detects the inactive validator and unstakes everything.
+        // redeem_and_update_accounting subtracts the actual redeemed amount
+        // (at the current rate, which includes rewards) from
+        // total_sui_amount (which was computed at the stale rate)
+        scenario.next_tx(@0x0);
+        let mut system_state = scenario.take_shared<SuiSystemState>();
+        assert!(!system_state.active_validator_addresses().contains(&@0x1));
+
+        storage.refresh(&mut system_state, scenario.ctx());
+        assert!(storage.validators().length() == 0);
+
+        test_scenario::return_shared(system_state);
+        sui::test_utils::destroy(storage);
+        scenario.end();
+    }
+}
