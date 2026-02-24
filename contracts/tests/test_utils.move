@@ -1,25 +1,23 @@
-#[allow(deprecated_usage)]
 #[test_only]
 module liquid_staking::test_utils {
-    use sui::address;
-    use sui_system::{governance_test_utils::create_validator_for_testing, validator::Validator};
+    use sui_system::{test_runner::{Self, TestRunner}, validator_builder};
 
-    /// Create a validator set with the given stake amounts
-    public fun create_validators_with_stakes(
-        stakes: vector<u64>,
-        ctx: &mut TxContext,
-    ): vector<Validator> {
-        let mut i = 0;
-        let mut validators = vector[];
-        while (i < stakes.length()) {
-            let validator = create_validator_for_testing(
-                address::from_u256(i as u256),
-                stakes[i],
-                ctx,
-            );
-            validators.push_back(validator);
-            i = i + 1
-        };
-        validators
+    public fun advance_epoch_no_rewards(runner: &mut TestRunner) {
+        runner.advance_epoch(option::none()).destroy_for_testing();
+    }
+
+    public fun advance_epoch_with_rewards(runner: &mut TestRunner, computation_charge: u64) {
+        let opts = runner.advance_epoch_opts().computation_charge(computation_charge);
+        runner.advance_epoch(option::some(opts)).destroy_for_testing();
+    }
+
+    public fun setup_runner(stakes: vector<u64>): TestRunner {
+        let mut runner = test_runner::new()
+            .validators(stakes.map!(|stake| validator_builder::new().initial_stake(stake)))
+            .build();
+
+        advance_epoch_no_rewards(&mut runner);
+
+        runner
     }
 }
