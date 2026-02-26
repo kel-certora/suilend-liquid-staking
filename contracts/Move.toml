@@ -21,7 +21,7 @@ published-at = "0xf89509a8b32205a362921d58a5a0b0bfb13981122a5a0dc49eef7947d4dd21
 
 [addresses]
 # liquid_staking = "0x0"
-liquid_staking = "0xb0575765166030556a6eafd3b1b970eba8183ff748860680245b9edd41c716e7"
+liquid_staking = "0xb49e62ea76f58b8e02e7c31cbb939e9d019a0c2be1c30f3bc58a6249a58f9333"
 
 # Named addresses will be accessible in Move as `@name`. They're also exported:
 # for example, `std = "0x1"` is exported by the Standard Library.
