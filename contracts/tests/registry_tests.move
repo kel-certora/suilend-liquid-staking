@@ -1,21 +1,18 @@
 #[test_only]
 module liquid_staking::registry_tests {
-    use sui::test_scenario::{Self, Scenario};
-    use liquid_staking::fees::{Self};
-    use liquid_staking::liquid_staking::{Self};
-    use sui::coin::{Self};
-    use liquid_staking::weight::{Self};
-    use liquid_staking::registry::{Self};
+    use liquid_staking::{fees, liquid_staking, registry, weight};
+    use sui::{coin, test_scenario::{Self, Scenario}};
+
     public struct TEST has drop {}
 
-     #[test]
-     fun test_add_weight_hook_to_registry() {
+    #[test]
+    fun test_add_weight_hook_to_registry() {
         let mut scenario = test_scenario::begin(@0x0);
 
         let (admin_cap, lst_info) = liquid_staking::create_lst<TEST>(
             fees::new_builder(scenario.ctx()).to_fee_config(),
             coin::create_treasury_cap_for_testing(scenario.ctx()),
-            scenario.ctx()
+            scenario.ctx(),
         );
 
         let admin_cap_id = object::id(&admin_cap);

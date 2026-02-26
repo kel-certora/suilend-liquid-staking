@@ -1,20 +1,20 @@
 #[allow(deprecated_usage)]
 #[test_only]
 module liquid_staking::liquid_staking_tests {
-    // uncomment this line to import the module
-    use sui::address;
-    use sui_system::staking_pool::StakedSui;
-    use sui::test_scenario::{Self, Scenario};
-    use sui_system::sui_system::SuiSystemState;
-    use sui::coin::{Self};
-    use sui::sui::SUI;
-    use liquid_staking::liquid_staking::{create_lst, create_lst_with_stake};
-    use liquid_staking::fees::{Self};
-    use sui_system::governance_test_utils::{
-        advance_epoch_with_reward_amounts,
-        create_sui_system_state_for_testing,
+    use liquid_staking::{
+        fees,
+        liquid_staking::{create_lst, create_lst_with_stake},
+        test_utils::create_validators_with_stakes
     };
-    use liquid_staking::test_utils::create_validators_with_stakes;
+    use sui::{address, coin, sui::SUI, test_scenario::{Self, Scenario}};
+    use sui_system::{
+        governance_test_utils::{
+            advance_epoch_with_reward_amounts,
+            create_sui_system_state_for_testing
+        },
+        staking_pool::StakedSui,
+        sui_system::SuiSystemState
+    };
 
     /* Constants */
     const MIST_PER_SUI: u64 = 1_000_000_000;
@@ -28,9 +28,9 @@ module liquid_staking::liquid_staking_tests {
         let ctx = scenario.ctx();
 
         let staked_sui = system_state.request_add_stake_non_entry(
-            coin::mint_for_testing(amount * MIST_PER_SUI, ctx), 
-            address::from_u256(validator_index as u256), 
-            ctx
+            coin::mint_for_testing(amount * MIST_PER_SUI, ctx),
+            address::from_u256(validator_index as u256),
+            ctx,
         );
 
         test_scenario::return_shared(system_state);
@@ -46,10 +46,10 @@ module liquid_staking::liquid_staking_tests {
         advance_epoch_with_reward_amounts(0, 0, scenario);
     }
 
-     public struct TEST has drop {}
+    public struct TEST has drop {}
 
-     #[test]
-     fun test_create_lst() {
+    #[test]
+    fun test_create_lst() {
         let mut scenario = test_scenario::begin(@0x0);
 
         setup_sui_system(&mut scenario, vector[100, 100]);
@@ -64,7 +64,7 @@ module liquid_staking::liquid_staking_tests {
                 .set_redeem_fee_bps(100)
                 .to_fee_config(),
             coin::create_treasury_cap_for_testing(scenario.ctx()),
-            scenario.ctx()
+            scenario.ctx(),
         );
 
         assert!(lst_info.total_lst_supply() == 0, 0);
@@ -76,7 +76,7 @@ module liquid_staking::liquid_staking_tests {
         sui::test_utils::destroy(lst_info);
 
         scenario.end();
-     }
+    }
 
     #[test]
     fun test_create_lst_with_stake_happy() {
@@ -89,7 +89,10 @@ module liquid_staking::liquid_staking_tests {
         advance_epoch_with_reward_amounts(0, 0, &mut scenario);
 
         let mut system_state = scenario.take_shared<SuiSystemState>();
-        let fungible_staked_sui = system_state.convert_to_fungible_staked_sui(staked_sui, scenario.ctx());
+        let fungible_staked_sui = system_state.convert_to_fungible_staked_sui(
+            staked_sui,
+            scenario.ctx(),
+        );
 
         // Create a treasury cap with non-zero coins
         let mut treasury_cap = coin::create_treasury_cap_for_testing<TEST>(scenario.ctx());
@@ -104,7 +107,7 @@ module liquid_staking::liquid_staking_tests {
             treasury_cap,
             vector[fungible_staked_sui],
             coin::mint_for_testing(100 * MIST_PER_SUI, scenario.ctx()),
-            scenario.ctx()
+            scenario.ctx(),
         );
 
         assert!(lst_info.total_lst_supply() == 200 * MIST_PER_SUI, 0);
@@ -114,7 +117,7 @@ module liquid_staking::liquid_staking_tests {
 
         sui::test_utils::destroy(admin_cap);
         sui::test_utils::destroy(lst_info);
-        sui::test_utils::destroy( coins);
+        sui::test_utils::destroy(coins);
 
         scenario.end();
     }
@@ -137,7 +140,7 @@ module liquid_staking::liquid_staking_tests {
                 .set_redeem_fee_bps(100)
                 .to_fee_config(),
             treasury_cap,
-            scenario.ctx()
+            scenario.ctx(),
         );
 
         test_scenario::return_shared(system_state);
@@ -160,7 +163,10 @@ module liquid_staking::liquid_staking_tests {
         advance_epoch_with_reward_amounts(0, 0, &mut scenario);
 
         let mut system_state = scenario.take_shared<SuiSystemState>();
-        let fungible_staked_sui = system_state.convert_to_fungible_staked_sui(staked_sui, scenario.ctx());
+        let fungible_staked_sui = system_state.convert_to_fungible_staked_sui(
+            staked_sui,
+            scenario.ctx(),
+        );
 
         // Create an empty treasury cap
         let treasury_cap = coin::create_treasury_cap_for_testing(scenario.ctx());
@@ -174,7 +180,7 @@ module liquid_staking::liquid_staking_tests {
             treasury_cap,
             vector[fungible_staked_sui],
             coin::zero<SUI>(scenario.ctx()),
-            scenario.ctx()
+            scenario.ctx(),
         );
 
         test_scenario::return_shared(system_state);
@@ -206,7 +212,7 @@ module liquid_staking::liquid_staking_tests {
             treasury_cap,
             vector::empty(),
             coin::zero<SUI>(scenario.ctx()),
-            scenario.ctx()
+            scenario.ctx(),
         );
 
         test_scenario::return_shared(system_state);
@@ -239,7 +245,7 @@ module liquid_staking::liquid_staking_tests {
             treasury_cap,
             vector::empty(),
             coin::mint_for_testing(1000  * MIST_PER_SUI - 1, scenario.ctx()),
-            scenario.ctx()
+            scenario.ctx(),
         );
 
         test_scenario::return_shared(system_state);
@@ -272,7 +278,7 @@ module liquid_staking::liquid_staking_tests {
             treasury_cap,
             vector::empty(),
             coin::mint_for_testing(2000  * MIST_PER_SUI + 1, scenario.ctx()),
-            scenario.ctx()
+            scenario.ctx(),
         );
 
         test_scenario::return_shared(system_state);
@@ -301,7 +307,7 @@ module liquid_staking::liquid_staking_tests {
                 .set_redeem_fee_bps(100)
                 .to_fee_config(),
             coin::create_treasury_cap_for_testing(scenario.ctx()),
-            scenario.ctx()
+            scenario.ctx(),
         );
 
         let lst = lst_info.mint(&mut system_state, sui, scenario.ctx());
@@ -320,11 +326,10 @@ module liquid_staking::liquid_staking_tests {
         assert!(lst_info.total_sui_supply() == 198 * MIST_PER_SUI, 0);
         assert!(lst_info.fees() == 2 * MIST_PER_SUI, 0);
 
-
         let sui = lst_info.redeem(
-            lst.split(10 * MIST_PER_SUI, scenario.ctx()), 
-            &mut system_state, 
-            scenario.ctx()
+            lst.split(10 * MIST_PER_SUI, scenario.ctx()),
+            &mut system_state,
+            scenario.ctx(),
         );
 
         assert!(sui.value() ==  9_900_000_000, 0);
@@ -360,7 +365,7 @@ module liquid_staking::liquid_staking_tests {
                 .set_redeem_fee_bps(100)
                 .to_fee_config(),
             coin::create_treasury_cap_for_testing(scenario.ctx()),
-            scenario.ctx()
+            scenario.ctx(),
         );
 
         let lst = lst_info.mint(&mut system_state, sui, scenario.ctx());
@@ -371,33 +376,33 @@ module liquid_staking::liquid_staking_tests {
         assert!(lst_info.fees() == 1 * MIST_PER_SUI, 0);
 
         lst_info.increase_validator_stake(
-            &admin_cap, 
-            &mut system_state, 
+            &admin_cap,
+            &mut system_state,
             @0x0,
-            20 * MIST_PER_SUI, 
-            scenario.ctx()
+            20 * MIST_PER_SUI,
+            scenario.ctx(),
         );
 
         assert!(lst_info.total_lst_supply() == 99 * MIST_PER_SUI, 0);
         assert!(lst_info.total_sui_supply() == 99 * MIST_PER_SUI, 0);
         assert!(
-            lst_info.storage().validators()[0].inactive_stake().borrow().staked_sui_amount() == 20 * MIST_PER_SUI, 
-            0
+            lst_info.storage().validators()[0].inactive_stake().borrow().staked_sui_amount() == 20 * MIST_PER_SUI,
+            0,
         );
 
         lst_info.increase_validator_stake(
-            &admin_cap, 
-            &mut system_state, 
+            &admin_cap,
+            &mut system_state,
             @0x1,
-            20 * MIST_PER_SUI, 
-            scenario.ctx()
+            20 * MIST_PER_SUI,
+            scenario.ctx(),
         );
 
         assert!(lst_info.total_lst_supply() == 99 * MIST_PER_SUI, 0);
         assert!(lst_info.total_sui_supply() == 99 * MIST_PER_SUI, 0);
         assert!(
-            lst_info.storage().validators()[1].inactive_stake().borrow().staked_sui_amount() == 20 * MIST_PER_SUI, 
-            0
+            lst_info.storage().validators()[1].inactive_stake().borrow().staked_sui_amount() == 20 * MIST_PER_SUI,
+            0,
         );
 
         test_scenario::return_shared(system_state);
@@ -405,47 +410,40 @@ module liquid_staking::liquid_staking_tests {
         scenario.next_tx(@0x0);
         advance_epoch_with_reward_amounts(0, 20, &mut scenario);
 
-
         scenario.next_tx(@0x0);
         let mut system_state = scenario.take_shared<SuiSystemState>();
 
         lst_info.increase_validator_stake(
-            &admin_cap, 
-            &mut system_state, 
+            &admin_cap,
+            &mut system_state,
             @0x1,
-            20 * MIST_PER_SUI, 
-            scenario.ctx()
+            20 * MIST_PER_SUI,
+            scenario.ctx(),
         );
 
         assert!(lst_info.total_lst_supply() == 99 * MIST_PER_SUI, 0);
         assert!(lst_info.total_sui_supply() == 99 * MIST_PER_SUI, 0);
         assert!(
-            lst_info.storage().validators()[1].inactive_stake().borrow().staked_sui_amount() == 20 * MIST_PER_SUI, 
-            0
+            lst_info.storage().validators()[1].inactive_stake().borrow().staked_sui_amount() == 20 * MIST_PER_SUI,
+            0,
         );
         assert!(
-            lst_info.storage().validators()[1].active_stake().borrow().value() == 10 * MIST_PER_SUI, 
-            0
+            lst_info.storage().validators()[1].active_stake().borrow().value() == 10 * MIST_PER_SUI,
+            0,
         );
 
         lst_info.decrease_validator_stake(
-            &admin_cap, 
-            &mut system_state, 
+            &admin_cap,
+            &mut system_state,
             @0x1,
-            40 * MIST_PER_SUI, 
-            scenario.ctx()
+            40 * MIST_PER_SUI,
+            scenario.ctx(),
         );
 
         assert!(lst_info.total_lst_supply() == 99 * MIST_PER_SUI, 0);
         assert!(lst_info.total_sui_supply() == 99 * MIST_PER_SUI, 0);
-        assert!(
-            lst_info.storage().validators()[1].inactive_stake().is_none(),
-            0
-        );
-        assert!(
-            lst_info.storage().validators()[1].active_stake().is_none(),
-            0
-        );
+        assert!(lst_info.storage().validators()[1].inactive_stake().is_none(), 0);
+        assert!(lst_info.storage().validators()[1].active_stake().is_none(), 0);
 
         sui::test_utils::destroy(lst);
         test_scenario::return_shared(system_state);
@@ -472,7 +470,7 @@ module liquid_staking::liquid_staking_tests {
                 .set_sui_mint_fee_bps(1000) // 10%
                 .to_fee_config(),
             coin::create_treasury_cap_for_testing(scenario.ctx()),
-            scenario.ctx()
+            scenario.ctx(),
         );
 
         let sui = coin::mint_for_testing<SUI>(100 * MIST_PER_SUI, scenario.ctx());
@@ -481,18 +479,18 @@ module liquid_staking::liquid_staking_tests {
         assert!(lst.value() == 90 * MIST_PER_SUI, 0);
 
         lst_info.increase_validator_stake(
-            &admin_cap, 
-            &mut system_state, 
+            &admin_cap,
+            &mut system_state,
             @0x0,
-            45 * MIST_PER_SUI, 
-            scenario.ctx()
+            45 * MIST_PER_SUI,
+            scenario.ctx(),
         );
         lst_info.increase_validator_stake(
-            &admin_cap, 
-            &mut system_state, 
+            &admin_cap,
+            &mut system_state,
             @0x1,
-            45 * MIST_PER_SUI, 
-            scenario.ctx()
+            45 * MIST_PER_SUI,
+            scenario.ctx(),
         );
 
         test_scenario::return_shared(system_state);
@@ -506,8 +504,8 @@ module liquid_staking::liquid_staking_tests {
         let mut system_state = scenario.take_shared<SuiSystemState>();
         let sui = lst_info.redeem(
             lst,
-            &mut system_state, 
-            scenario.ctx()
+            &mut system_state,
+            scenario.ctx(),
         );
 
         assert!(sui.value() == 135 * MIST_PER_SUI, 0);
@@ -546,7 +544,7 @@ module liquid_staking::liquid_staking_tests {
                 .set_sui_mint_fee_bps(1000) // 10%
                 .to_fee_config(),
             coin::create_treasury_cap_for_testing(scenario.ctx()),
-            scenario.ctx()
+            scenario.ctx(),
         );
 
         lst_info.update_fees(
@@ -554,7 +552,7 @@ module liquid_staking::liquid_staking_tests {
             fees::new_builder(scenario.ctx())
                 .set_spread_fee_bps(1000) // 10%
                 .set_sui_mint_fee_bps(100) // 10%
-                .to_fee_config()
+                .to_fee_config(),
         );
 
         assert!(lst_info.fee_config().spread_fee_bps() == 1000, 0);
@@ -588,7 +586,7 @@ module liquid_staking::liquid_staking_tests {
             treasury_cap,
             vector::empty(),
             coin::mint_for_testing(100 * MIST_PER_SUI, scenario.ctx()),
-            scenario.ctx()
+            scenario.ctx(),
         );
 
         let increased_amount = lst_info.increase_validator_stake(
@@ -596,7 +594,7 @@ module liquid_staking::liquid_staking_tests {
             &mut system_state,
             @0x0,
             MIST_PER_SUI - 1,
-            scenario.ctx()
+            scenario.ctx(),
         );
 
         assert!(increased_amount == 0, 0);
@@ -634,7 +632,7 @@ module liquid_staking::liquid_staking_tests {
             treasury_cap,
             vector::empty(),
             coin::mint_for_testing(100 * MIST_PER_SUI, scenario.ctx()),
-            scenario.ctx()
+            scenario.ctx(),
         );
 
         lst_info.increase_validator_stake(
@@ -642,7 +640,7 @@ module liquid_staking::liquid_staking_tests {
             &mut system_state,
             @0x0,
             MIST_PER_SUI,
-            scenario.ctx()
+            scenario.ctx(),
         );
 
         lst_info.increase_validator_stake(
@@ -650,7 +648,7 @@ module liquid_staking::liquid_staking_tests {
             &mut system_state,
             @0x1,
             MIST_PER_SUI,
-            scenario.ctx()
+            scenario.ctx(),
         );
 
         assert!(lst_info.storage().validators()[0].staking_pool_id() == pool_id_1);
@@ -659,7 +657,7 @@ module liquid_staking::liquid_staking_tests {
         lst_info.change_validator_priority(
             &admin_cap,
             0,
-            1
+            1,
         );
 
         assert!(lst_info.storage().validators()[0].staking_pool_id() == pool_id_2);
@@ -668,7 +666,7 @@ module liquid_staking::liquid_staking_tests {
         lst_info.change_validator_priority(
             &admin_cap,
             0,
-            0
+            0,
         );
 
         assert!(lst_info.storage().validators()[0].staking_pool_id() == pool_id_2);
@@ -700,7 +698,7 @@ module liquid_staking::liquid_staking_tests {
                 .set_sui_mint_fee_bps(1000) // 10%
                 .to_fee_config(),
             coin::create_treasury_cap_for_testing(scenario.ctx()),
-            scenario.ctx()
+            scenario.ctx(),
         );
 
         let sui = coin::mint_for_testing<SUI>(mint_amount, scenario.ctx());
@@ -712,7 +710,7 @@ module liquid_staking::liquid_staking_tests {
             &mut system_state,
             @0x0,
             stake_amount,
-            scenario.ctx()
+            scenario.ctx(),
         );
 
         assert!(increased_amount == std::u64::min(total_sui_supply, stake_amount), 0);
@@ -740,7 +738,10 @@ module liquid_staking::liquid_staking_tests {
         advance_epoch_with_reward_amounts(0, 0, &mut scenario);
 
         let mut system_state = scenario.take_shared<SuiSystemState>();
-        let fungible_staked_sui = system_state.convert_to_fungible_staked_sui(staked_sui, scenario.ctx());
+        let fungible_staked_sui = system_state.convert_to_fungible_staked_sui(
+            staked_sui,
+            scenario.ctx(),
+        );
 
         let (admin_cap, mut lst_info) = create_lst_with_stake<TEST>(
             &mut system_state,
@@ -751,7 +752,7 @@ module liquid_staking::liquid_staking_tests {
             treasury_cap,
             vector[fungible_staked_sui],
             coin::zero<SUI>(scenario.ctx()),
-            scenario.ctx()
+            scenario.ctx(),
         );
 
         let total_sui_supply = lst_info.total_sui_supply();
@@ -761,10 +762,13 @@ module liquid_staking::liquid_staking_tests {
             &mut system_state,
             @0x0,
             unstake_amount,
-            scenario.ctx()
+            scenario.ctx(),
         );
 
-        assert!(unstaked_amount <= std::u64::min(total_sui_supply, unstake_amount + MIST_PER_SUI), 0);
+        assert!(
+            unstaked_amount <= std::u64::min(total_sui_supply, unstake_amount + MIST_PER_SUI),
+            0,
+        );
 
         sui::test_utils::destroy(lst);
 
@@ -787,7 +791,7 @@ module liquid_staking::liquid_staking_tests {
         let (admin_cap, mut lst_info) = create_lst<TEST>(
             fees::new_builder(scenario.ctx()).set_custom_redeem_fee_bps(100).to_fee_config(),
             coin::create_treasury_cap_for_testing(scenario.ctx()),
-            scenario.ctx()
+            scenario.ctx(),
         );
 
         let mut system_state = scenario.take_shared<SuiSystemState>();
@@ -798,7 +802,11 @@ module liquid_staking::liquid_staking_tests {
         assert!(lst_info.storage().total_sui_supply() == 100 * MIST_PER_SUI, 0);
 
         let lst_to_unstake = lst.split(10 * MIST_PER_SUI, scenario.ctx());
-        let custom_redeem_request = lst_info.custom_redeem_request(lst_to_unstake,&mut system_state, scenario.ctx());
+        let custom_redeem_request = lst_info.custom_redeem_request(
+            lst_to_unstake,
+            &mut system_state,
+            scenario.ctx(),
+        );
 
         let sui = lst_info.custom_redeem(custom_redeem_request, &mut system_state, scenario.ctx());
 
@@ -809,7 +817,7 @@ module liquid_staking::liquid_staking_tests {
         sui::test_utils::destroy(sui);
         sui::test_utils::destroy(admin_cap);
 
-        scenario.end(); 
+        scenario.end();
     }
 
     #[test]
@@ -833,7 +841,7 @@ module liquid_staking::liquid_staking_tests {
                 .set_redeem_fee_bps(100)
                 .to_fee_config(),
             coin::create_treasury_cap_for_testing(scenario.ctx()),
-            scenario.ctx()
+            scenario.ctx(),
         );
 
         assert!(lst_info.total_lst_supply() == 0, 0);
@@ -843,11 +851,11 @@ module liquid_staking::liquid_staking_tests {
         let lst = lst_info.mint(&mut system_state, sui, scenario.ctx());
 
         lst_info.increase_validator_stake(
-            &admin_cap, 
-            &mut system_state, 
+            &admin_cap,
+            &mut system_state,
             @0x0,
-            200 * MIST_PER_SUI, 
-            scenario.ctx()
+            200 * MIST_PER_SUI,
+            scenario.ctx(),
         );
 
         test_scenario::return_shared(system_state);
